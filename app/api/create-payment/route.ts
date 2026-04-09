@@ -19,7 +19,6 @@ export async function POST(request: Request) {
     const payment = new Payment(client);
     const paymentBody = {
       transaction_amount: 4.9,
-      currency_id: "BRL",
       description: "ATSFácil — Currículo ATS",
       payment_method_id: "pix",
       payer: {
