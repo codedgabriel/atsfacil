@@ -49,6 +49,12 @@ test("wizard editor fits inside the viewport shell", () => {
   assert.match(files.wizard, /shrink-0 border-t/);
 });
 
+test("wizard header is compact and centered", () => {
+  assert.match(files.wizard, /sm:py-3/);
+  assert.match(files.wizard, /border-slate-200 pb-2/);
+  assert.match(files.wizard, /mx-auto w-full max-w-3xl/);
+});
+
 test("wizard step rail has quick navigation and styled scrollbars", () => {
   assert.match(files.wizard, /scrollAreaClass/);
   assert.match(files.wizard, /goToStep/);

@@ -275,11 +275,12 @@ export default function WizardPage() {
 
   return (
     <main id="main-content" className="h-[100svh] overflow-hidden bg-white">
-      <div className="mx-auto flex h-full max-w-6xl flex-col px-4 py-4 sm:px-6 sm:py-5">
-        <header className="shrink-0 border-b border-slate-200 pb-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="mx-auto flex h-full max-w-6xl flex-col px-4 py-2 sm:px-6 sm:py-3">
+        <header className="shrink-0 border-b border-slate-200 pb-2">
+          <div className="mx-auto w-full max-w-3xl">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <button type="button" className="text-left" onClick={() => router.push("/")}>
-              <span className="text-xl font-bold text-slate-950" translate="no">
+              <span className="text-lg font-bold text-slate-950" translate="no">
                 ATSFácil
               </span>
             </button>
@@ -287,12 +288,13 @@ export default function WizardPage() {
               Passo {currentStep + 1} de {totalSteps}
             </span>
           </div>
-          <div className="mt-3 max-w-3xl">
+          <div className="mt-2">
             <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
+          </div>
           </div>
         </header>
 
-        <div className="mt-5 grid min-h-0 flex-1 gap-6 lg:grid-cols-[190px_minmax(0,1fr)]">
+        <div className="mt-4 grid min-h-0 flex-1 gap-6 lg:grid-cols-[190px_minmax(0,1fr)]">
           <aside className={`hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block ${scrollAreaClass}`}>
             <nav aria-label="Etapas do currículo">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Etapas</p>
