@@ -42,6 +42,13 @@ test("wizard editor uses a minimal shell instead of card wrapper", () => {
   assert.match(files.wizard, /aria-labelledby="step-heading"/);
 });
 
+test("wizard editor fits inside the viewport shell", () => {
+  assert.match(files.wizard, /h-\[100svh\]/);
+  assert.match(files.wizard, /overflow-hidden/);
+  assert.match(files.wizard, /min-h-0 flex-1 overflow-y-auto/);
+  assert.match(files.wizard, /shrink-0 border-t/);
+});
+
 test("landing page uses the editorial minimal direction", () => {
   assert.match(files.landing, /Editor Minimalista/);
   assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);

@@ -259,9 +259,9 @@ export default function WizardPage() {
   const linkedInHandle = getLinkedInHandle(formData.linkedin);
 
   return (
-    <main id="main-content" className="min-h-screen bg-white">
-      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-10">
-        <header className="border-b border-slate-200 pb-6 sm:pb-8">
+    <main id="main-content" className="h-[100svh] overflow-hidden bg-white">
+      <div className="mx-auto flex h-full max-w-6xl flex-col px-4 py-4 sm:px-6 sm:py-5">
+        <header className="shrink-0 border-b border-slate-200 pb-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <button type="button" className="text-left" onClick={() => router.push("/")}>
               <span className="text-xl font-bold text-slate-950" translate="no">
@@ -272,22 +272,22 @@ export default function WizardPage() {
               Passo {currentStep + 1} de {totalSteps}
             </span>
           </div>
-          <div className="mt-5 max-w-3xl">
+          <div className="mt-3 max-w-3xl">
             <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
           </div>
         </header>
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
-          <aside className="space-y-8 lg:sticky lg:top-8 lg:self-start">
+        <div className="mt-5 grid min-h-0 flex-1 gap-6 lg:grid-cols-[190px_minmax(0,1fr)]">
+          <aside className="hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block">
             <nav aria-label="Etapas do currículo">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Etapas</p>
-              <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+              <ol className="mt-3 grid gap-2">
                 {stepDefinitions.map((step, index) => {
                   const isCurrent = index === currentStep;
                   const isCompleted = index < currentStep;
 
                   return (
-                    <li key={step.title} aria-current={isCurrent ? "step" : undefined} className="border-b border-slate-200 pb-3">
+                    <li key={step.title} aria-current={isCurrent ? "step" : undefined} className="border-b border-slate-200 pb-2">
                       <div className="flex items-start gap-3">
                         <span
                           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
@@ -301,8 +301,8 @@ export default function WizardPage() {
                           {index + 1}
                         </span>
                         <div className="min-w-0">
-                          <p className={`text-sm font-semibold ${isCurrent ? "text-slate-950" : "text-slate-600"}`}>{step.title}</p>
-                          <p className="mt-1 text-sm leading-6 text-slate-500">
+                          <p className={`text-sm font-semibold leading-5 ${isCurrent ? "text-slate-950" : "text-slate-600"}`}>{step.title}</p>
+                          <p className="mt-0.5 text-xs leading-5 text-slate-500">
                             {isCurrent ? "Etapa atual" : isCompleted ? "Preenchido" : "A seguir"}
                           </p>
                         </div>
@@ -313,18 +313,18 @@ export default function WizardPage() {
               </ol>
             </nav>
 
-            <div className="space-y-3 border-t border-slate-200 pt-6 text-sm leading-7 text-slate-600">
+            <div className="space-y-2 border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">
               <p>Seus dados ficam salvos automaticamente no navegador durante todo o preenchimento.</p>
               <p>O PDF ATS é liberado por {formatPriceBRL()} em pagamento único via Pix.</p>
             </div>
           </aside>
 
-          <section aria-labelledby="step-heading" className="min-w-0">
-            <div className="max-w-3xl">
-              <div className="border-b border-slate-200 pb-8">
+          <section aria-labelledby="step-heading" className="min-h-0 min-w-0">
+            <div className="flex h-full max-w-3xl flex-col">
+              <div className="shrink-0 border-b border-slate-200 pb-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.08em] text-blue-600">Passo {currentStep + 1}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <h1 id="step-heading" className="text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
+                  <h1 id="step-heading" className="text-2xl font-bold text-slate-950 text-balance sm:text-3xl">
                     {stepDefinitions[currentStep].title}
                   </h1>
                   {currentStep === 6 ? (
@@ -333,10 +333,11 @@ export default function WizardPage() {
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{stepDefinitions[currentStep].description}</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{stepDefinitions[currentStep].description}</p>
               </div>
 
-              <div className="space-y-10 pt-8">
+              <div className="min-h-0 flex-1 overflow-y-auto pr-1 pt-5 [scrollbar-gutter:stable]">
+                <div className="space-y-8 pb-6">
                 {currentStep === 0 ? (
                   <div className="space-y-8">
                     <div className="grid gap-6">
@@ -770,29 +771,33 @@ export default function WizardPage() {
                       </details>
                     ))}
 
-                    <div className="border-t border-slate-200 pt-8">
-                      <Button type="button" className="w-full" onClick={goCheckout}>
-                        Gerar meu currículo por {formatPriceBRL()}
-                      </Button>
-                      <p className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-slate-600">
-                        <Lock className="h-4 w-4" aria-hidden="true" />
-                        Pagamento único via Pix · Sem assinatura
-                      </p>
-                    </div>
                   </div>
                 ) : null}
+                </div>
               </div>
 
-              {currentStep < 7 ? (
-                <div className="mt-10 flex items-center justify-between gap-3 border-t border-slate-200 pt-6">
-                  <Button type="button" variant="ghost" onClick={previousStep} disabled={currentStep === 0}>
-                    Voltar
-                  </Button>
-                  <Button type="button" onClick={goReviewOrNext}>
-                    {currentStep === 6 ? "Revisar currículo" : "Próximo"}
-                  </Button>
-                </div>
-              ) : null}
+              <div className="shrink-0 border-t border-slate-200 pt-4">
+                {currentStep < 7 ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <Button type="button" variant="ghost" onClick={previousStep} disabled={currentStep === 0}>
+                      Voltar
+                    </Button>
+                    <Button type="button" onClick={goReviewOrNext}>
+                      {currentStep === 6 ? "Revisar currículo" : "Próximo"}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <Button type="button" className="w-full" onClick={goCheckout}>
+                      Gerar meu currículo por {formatPriceBRL()}
+                    </Button>
+                    <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600">
+                      <Lock className="h-4 w-4" aria-hidden="true" />
+                      Pagamento único via Pix · Sem assinatura
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </section>
         </div>
