@@ -60,7 +60,12 @@ export type ResumeData = {
 export const FORM_STORAGE_KEY = "atsfacil_form";
 
 export const educationLevels = ["Tecnico", "Graduacao", "Pos-graduacao", "MBA", "Mestrado", "Doutorado"];
-export const languageLevels = ["Basico", "Intermediario", "Avancado", "Fluente", "Nativo"];
+export const languageLevels = ["Básico", "Intermediário", "Avançado", "Fluente", "Nativo"];
+const legacyLanguageLevels: Record<string, string> = {
+  Basico: "Básico",
+  Intermediario: "Intermediário",
+  Avancado: "Avançado",
+};
 export const additionalLinkTypes: AdditionalLinkType[] = ["GitHub", "GitLab", "Behance", "Portfolio", "Site", "Outro"];
 export const technicalSkillSuggestions = [
   "HTML",
@@ -165,7 +170,7 @@ export const emptyEducation = (): Education => ({
 export const emptyLanguage = (): Language => ({
   id: crypto.randomUUID(),
   idioma: "",
-  nivel: "Intermediario",
+  nivel: "Intermediário",
 });
 
 export const emptyCourse = (): Course => ({
@@ -205,6 +210,20 @@ export const defaultResumeData = (): ResumeData => ({
 export function isFormEmpty(data: ResumeData | null) {
   if (!data) return true;
   return !data.nome_completo && !data.email && !data.cargo_desejado && !data.resumo_profissional;
+}
+
+export function normalizeLanguageLevel(level: string) {
+  return legacyLanguageLevels[level] ?? level;
+}
+
+export function normalizeResumeData(data: ResumeData) {
+  return {
+    ...data,
+    idiomas: data.idiomas.map((item) => ({
+      ...item,
+      nivel: normalizeLanguageLevel(item.nivel),
+    })),
+  };
 }
 
 export function getLinkedInHandle(value: string) {

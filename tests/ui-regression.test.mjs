@@ -10,6 +10,7 @@ const files = {
   helpTip: readFileSync(new URL("../components/HelpTip.tsx", import.meta.url), "utf8"),
   tagInput: readFileSync(new URL("../components/TagInput.tsx", import.meta.url), "utf8"),
   pdf: readFileSync(new URL("../lib/generatePDF.ts", import.meta.url), "utf8"),
+  resume: readFileSync(new URL("../lib/resume.ts", import.meta.url), "utf8"),
 };
 
 test("public pricing surfaces use R$ 0,01", () => {
@@ -48,6 +49,9 @@ test("wizard editor fits inside the viewport shell", () => {
   assert.match(files.wizard, /overflow-hidden/);
   assert.match(files.wizard, /min-h-0 flex-1 overflow-y-auto/);
   assert.match(files.wizard, /shrink-0 border-t/);
+  assert.match(files.wizard, /MobileStepNav/);
+  assert.match(files.wizard, /lg:hidden/);
+  assert.match(files.wizard, /Resumo ATS/);
 });
 
 test("wizard removes the duplicated top progress header", () => {
@@ -123,4 +127,12 @@ test("pdf header contact line uses ATS-friendly labels", () => {
 test("tag input pills and suggestions can wrap long content", () => {
   assert.match(files.tagInput, /min-w-0/);
   assert.match(files.tagInput, /break-words/);
+});
+
+test("language levels keep portuguese accents and normalize old saved values", () => {
+  assert.match(files.resume, /Básico/);
+  assert.match(files.resume, /Intermediário/);
+  assert.match(files.resume, /Avançado/);
+  assert.match(files.resume, /normalizeLanguageLevel/);
+  assert.match(files.wizard, /normalizeResumeData/);
 });

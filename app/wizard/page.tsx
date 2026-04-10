@@ -8,7 +8,7 @@ import { Input } from "@/components/Input";
 import { Select } from "@/components/Select";
 import { TagInput } from "@/components/TagInput";
 import { Textarea } from "@/components/Textarea";
-import { calculateAtsScore } from "@/lib/atsScore";
+import { calculateAtsScore, type AtsScoreResult } from "@/lib/atsScore";
 import { formatPriceBRL } from "@/lib/pricing";
 import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
 import { getWizardStepState } from "@/lib/wizardProgress";
@@ -29,6 +29,7 @@ import {
   getLinkedInHandle,
   getResumeLinks,
   languageLevels,
+  normalizeResumeData,
   softSkillSuggestions,
   technicalSkillSuggestions,
   type AdditionalLink,
@@ -102,6 +103,65 @@ function focusFirstInvalidField() {
   }, 0);
 }
 
+type MobileStepNavProps = {
+  formData: ResumeData;
+  currentStep: number;
+  furthestStep: number;
+  atsScore: AtsScoreResult;
+  onGoToStep: (step: number) => void;
+};
+
+function MobileStepNav({ formData, currentStep, furthestStep, atsScore, onGoToStep }: MobileStepNavProps) {
+  return (
+    <div className={`mt-4 space-y-4 lg:hidden ${scrollAreaClass}`}>
+      <nav aria-label="Etapas rápidas do currículo" className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ol className="flex min-w-max gap-2">
+          {stepDefinitions.map((step, index) => {
+            const stepState = getWizardStepState(formData, index, currentStep, furthestStep);
+            const isCurrent = currentStep === index;
+
+            return (
+              <li key={step.title}>
+                <button
+                  type="button"
+                  onClick={() => onGoToStep(index)}
+                  disabled={!stepState.canNavigate}
+                  aria-label={`Ir para ${step.title}`}
+                  aria-current={isCurrent ? "step" : undefined}
+                  className={`flex h-9 min-w-9 items-center justify-center rounded-full border px-3 text-xs font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-45 ${
+                    isCurrent
+                      ? "border-blue-600 bg-blue-600 text-white"
+                      : stepState.progress === "complete"
+                        ? "border-blue-200 bg-blue-50 text-blue-700"
+                        : stepState.progress === "started"
+                          ? "border-blue-200 bg-white text-blue-700"
+                          : "border-slate-200 bg-white text-slate-500"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      <div className="border-y border-slate-200 py-3">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Resumo ATS</p>
+            <p className="mt-1 text-sm font-semibold text-slate-950">{atsScore.level}</p>
+          </div>
+          <p className="text-2xl font-bold tabular-nums text-slate-950">{atsScore.score}<span className="text-sm font-semibold text-slate-500">/100</span></p>
+        </div>
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+          <div className="h-full rounded-full bg-blue-600 transition-[width] duration-300" style={{ width: `${atsScore.score}%` }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function WizardPage() {
   const router = useRouter();
   const formScrollRef = useRef<HTMLDivElement>(null);
@@ -120,11 +180,11 @@ export default function WizardPage() {
 
     try {
       const parsed = JSON.parse(saved) as Partial<ResumeData>;
-      setFormData({
+      setFormData(normalizeResumeData({
         ...defaultResumeData(),
         ...parsed,
         links_adicionais: parsed.links_adicionais ?? [],
-      });
+      }));
     } catch {
       localStorage.removeItem(FORM_STORAGE_KEY);
     }
@@ -344,6 +404,13 @@ export default function WizardPage() {
                   ) : null}
                 </div>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{stepDefinitions[currentStep].description}</p>
+                <MobileStepNav
+                  formData={formData}
+                  currentStep={currentStep}
+                  furthestStep={furthestStep}
+                  atsScore={atsScore}
+                  onGoToStep={goToStep}
+                />
               </div>
 
               <div ref={formScrollRef} className={`min-h-0 flex-1 overflow-y-auto pr-1 pt-5 [scrollbar-gutter:stable] ${scrollAreaClass}`}>
