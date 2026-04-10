@@ -59,16 +59,31 @@ function paragraph(doc: jsPDF, text: string, y: number) {
   return y + 2;
 }
 
-function keyValueLine(doc: jsPDF, label: string, value: string, y: number) {
-  if (!value) return y;
-  y = ensureSpace(doc, y, 7);
-  doc.setFont("helvetica", "bold");
+function keyValueParagraph(doc: jsPDF, label: string, value: string, y: number) {
+  const cleanValue = clean(value);
+  if (!cleanValue) return y;
+
+  const labelText = `${label}:`;
+  const labelX = page.margin;
+  const valueX = page.margin + 26;
+  const valueWidth = page.width - page.margin - valueX;
+  const lines = split(doc, cleanValue, valueWidth);
+
   doc.setFontSize(10);
   doc.setTextColor("#333333");
-  doc.text(`${label}:`, page.margin, y);
-  doc.setFont("helvetica", "normal");
-  doc.text(value, page.margin + 26, y);
-  return y + 6;
+
+  lines.forEach((line, index) => {
+    y = ensureSpace(doc, y, 7);
+    if (index === 0) {
+      doc.setFont("helvetica", "bold");
+      doc.text(labelText, labelX, y);
+    }
+    doc.setFont("helvetica", "normal");
+    doc.text(line, valueX, y);
+    y += 5.6;
+  });
+
+  return y + 2;
 }
 
 function centeredMetaLine(doc: jsPDF, values: string[], y: number) {
@@ -161,8 +176,8 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
 
   if (formData.habilidades_tecnicas.length || formData.habilidades_comportamentais.length) {
     y = sectionHeader(doc, "HABILIDADES", y);
-    y = keyValueLine(doc, "T\u00e9cnicas", formData.habilidades_tecnicas.join(", "), y);
-    y = keyValueLine(doc, "Comportamentais", formData.habilidades_comportamentais.join(", "), y);
+    y = keyValueParagraph(doc, "T\u00e9cnicas", formData.habilidades_tecnicas.join(", "), y);
+    y = keyValueParagraph(doc, "Comportamentais", formData.habilidades_comportamentais.join(", "), y);
     y += 2;
   }
 
