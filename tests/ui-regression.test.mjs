@@ -202,7 +202,10 @@ test("review sends users to a resume model gallery before checkout", () => {
 test("model gallery fits the viewport and downloads ats plus print PDFs", () => {
   assert.match(files.modelos, /h-\[100svh\]/);
   assert.match(files.modelos, /overflow-hidden/);
+  assert.match(files.modelos, /lg:grid-cols-\[320px_minmax\(0,1fr\)\]/);
   assert.match(files.modelos, /ATS incluso/);
+  assert.match(files.modelos, /<aside[\s\S]*ATS incluso[\s\S]*<TemplateOption template=\{atsResumeTemplate\}/);
+  assert.doesNotMatch(files.modelos, /Sempre incluso/);
   assert.match(files.modelos, /Escolha o modelo de impressão/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId: "ats-clean" \}\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);

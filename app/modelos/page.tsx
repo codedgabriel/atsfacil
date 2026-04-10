@@ -289,8 +289,8 @@ export default function ModelosPage() {
 
   return (
     <main id="main-content" className="h-[100svh] overflow-hidden bg-white px-4 py-3 sm:px-6 sm:py-5">
-      <div className="mx-auto grid h-full min-h-0 max-w-7xl gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
-        <aside className="min-h-0 border-b border-slate-200 pb-4 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
+      <div className="mx-auto grid h-full min-h-0 max-w-7xl gap-4 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-6">
+        <aside className="flex min-h-0 flex-col border-b border-slate-200 pb-4 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
           <button
             type="button"
             onClick={() => router.push("/wizard")}
@@ -308,7 +308,10 @@ export default function ModelosPage() {
 
           <div className="mt-4 border-y border-slate-200 py-3 sm:mt-6 sm:py-4">
             <p className="text-sm font-semibold text-slate-950">ATS incluso</p>
-            <p className="mt-1 text-sm leading-6 text-slate-600">Também será baixado: {currentTemplate.name} com foto.</p>
+            <div className="mt-3 max-w-[190px]">
+              <TemplateOption template={atsResumeTemplate} selected formData={formData} onSelect={() => undefined} />
+            </div>
+            <p className="mt-3 text-sm leading-6 text-slate-600">Também será baixado: {currentTemplate.name} com foto.</p>
           </div>
 
           <Button type="button" className="mt-6 w-full" onClick={goCheckout}>
@@ -321,20 +324,7 @@ export default function ModelosPage() {
         </aside>
 
         <section className="flex min-h-0 min-w-0 flex-col">
-          <div className="shrink-0 grid gap-4 border-b border-slate-200 pb-4 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-end">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Sempre incluso</p>
-              <h2 className="mt-2 text-2xl font-bold text-slate-950">Modelo ATS</h2>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-[160px_minmax(0,1fr)] sm:items-center">
-              <div className="max-w-[160px]">
-                <TemplateOption template={atsResumeTemplate} selected formData={formData} onSelect={() => undefined} />
-              </div>
-              <p className="max-w-lg text-sm leading-6 text-slate-500">Formato limpo, sem foto, pensado para leitura automática por ATS. Ele fica marcado por padrão e não precisa escolher.</p>
-            </div>
-          </div>
-
-          <div className="shrink-0 mt-4 flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-3">
+          <div className="shrink-0 flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Galeria</p>
               <h2 className="mt-2 text-2xl font-bold text-slate-950">Currículos para impressão</h2>
