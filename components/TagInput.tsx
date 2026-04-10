@@ -40,13 +40,13 @@ export function TagInput({ label, tags, onChange, placeholder, suggestions = [],
         {label}
       </label>
       <div className="min-h-12 rounded-2xl border border-gray-300 bg-white p-2.5 shadow-sm focus-within:border-brand focus-within:ring-4 focus-within:ring-blue-100">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex min-w-0 flex-wrap gap-2">
           {tags.map((tag) => (
             <button
               key={tag}
               type="button"
               onClick={() => removeTag(tag)}
-              className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-brand transition-colors duration-200 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+              className="max-w-full break-words rounded-full bg-blue-50 px-3 py-1 text-left text-sm font-medium text-brand transition-colors duration-200 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
               aria-label={`Remover ${tag}`}
             >
               {tag} <span aria-hidden="true">x</span>
@@ -59,7 +59,7 @@ export function TagInput({ label, tags, onChange, placeholder, suggestions = [],
             onKeyDown={onKeyDown}
             onBlur={() => addTag(value)}
             placeholder={tags.length ? "" : placeholder}
-            className="min-w-32 flex-1 border-0 bg-transparent p-1 text-sm outline-none placeholder:text-gray-400"
+            className="min-w-0 flex-1 border-0 bg-transparent p-1 text-sm outline-none placeholder:text-gray-400"
             autoComplete="off"
           />
         </div>
@@ -73,7 +73,7 @@ export function TagInput({ label, tags, onChange, placeholder, suggestions = [],
               type="button"
               onClick={() => addTag(suggestion)}
               className={clsx(
-                "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100",
+                "max-w-full break-words rounded-full border px-3 py-1.5 text-left text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-100",
                 tags.includes(suggestion) ? "border-blue-100 bg-blue-50 text-brand" : "border-gray-300 text-gray-700 hover:border-brand hover:text-brand",
               )}
             >
