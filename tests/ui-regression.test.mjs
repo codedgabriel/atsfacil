@@ -136,3 +136,13 @@ test("language levels keep portuguese accents and normalize old saved values", (
   assert.match(files.resume, /normalizeLanguageLevel/);
   assert.match(files.wizard, /normalizeResumeData/);
 });
+
+
+test("education levels keep portuguese accents and formation date copy is clear", () => {
+  assert.match(files.resume, /T\u00e9cnico/);
+  assert.match(files.resume, /Gradua\u00e7\u00e3o/);
+  assert.match(files.resume, /P\u00f3s-gradua\u00e7\u00e3o/);
+  assert.match(files.resume, /normalizeEducationLevel/);
+  assert.match(files.wizard, /Conclus\u00e3o prevista ou conclu\u00edda/);
+  assert.match(files.wizard, /Status: Em andamento/);
+});

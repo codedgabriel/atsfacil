@@ -59,8 +59,13 @@ export type ResumeData = {
 
 export const FORM_STORAGE_KEY = "atsfacil_form";
 
-export const educationLevels = ["Tecnico", "Graduacao", "Pos-graduacao", "MBA", "Mestrado", "Doutorado"];
+export const educationLevels = ["Técnico", "Graduação", "Pós-graduação", "MBA", "Mestrado", "Doutorado"];
 export const languageLevels = ["Básico", "Intermediário", "Avançado", "Fluente", "Nativo"];
+const legacyEducationLevels: Record<string, string> = {
+  Tecnico: "Técnico",
+  Graduacao: "Graduação",
+  "Pos-graduacao": "Pós-graduação",
+};
 const legacyLanguageLevels: Record<string, string> = {
   Basico: "Básico",
   Intermediario: "Intermediário",
@@ -163,7 +168,7 @@ export const emptyEducation = (): Education => ({
   id: crypto.randomUUID(),
   curso: "",
   instituicao: "",
-  nivel: "Graduacao",
+  nivel: "Graduação",
   data_conclusao: "",
 });
 
@@ -216,9 +221,17 @@ export function normalizeLanguageLevel(level: string) {
   return legacyLanguageLevels[level] ?? level;
 }
 
+export function normalizeEducationLevel(level: string) {
+  return legacyEducationLevels[level] ?? level;
+}
+
 export function normalizeResumeData(data: ResumeData) {
   return {
     ...data,
+    formacoes: data.formacoes.map((item) => ({
+      ...item,
+      nivel: normalizeEducationLevel(item.nivel),
+    })),
     idiomas: data.idiomas.map((item) => ({
       ...item,
       nivel: normalizeLanguageLevel(item.nivel),

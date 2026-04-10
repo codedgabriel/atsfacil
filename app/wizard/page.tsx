@@ -679,15 +679,21 @@ export default function WizardPage() {
                           error={errors[`formacoes.${index}.instituicao`]}
                         />
                         <Select label="Nível" options={educationLevels} value={item.nivel} onChange={(e) => updateList<Education>("formacoes", item.id, { nivel: e.target.value })} />
-                        <Input
-                          label="Data de conclusão"
-                          placeholder="MM/AAAA"
-                          inputMode="numeric"
-                          maxLength={7}
-                          disabled={isCurrentValue(item.data_conclusao, "Em andamento")}
-                          value={isCurrentValue(item.data_conclusao, "Em andamento") ? "" : formatMonthYearInput(item.data_conclusao)}
-                          onChange={(e) => updateList<Education>("formacoes", item.id, { data_conclusao: formatMonthYearInput(e.target.value) })}
-                        />
+                        {isCurrentValue(item.data_conclusao, "Em andamento") ? (
+                          <div className="border-y border-slate-200 py-3">
+                            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Conclusão prevista ou concluída</p>
+                            <p className="mt-1 text-sm font-semibold text-slate-950">Status: Em andamento</p>
+                          </div>
+                        ) : (
+                          <Input
+                            label="Conclusão prevista ou concluída"
+                            placeholder="MM/AAAA"
+                            inputMode="numeric"
+                            maxLength={7}
+                            value={formatMonthYearInput(item.data_conclusao)}
+                            onChange={(e) => updateList<Education>("formacoes", item.id, { data_conclusao: formatMonthYearInput(e.target.value) })}
+                          />
+                        )}
                         <label className="flex items-start gap-3 text-sm leading-7 text-slate-700">
                           <input
                             type="checkbox"
