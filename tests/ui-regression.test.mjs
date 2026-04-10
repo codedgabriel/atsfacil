@@ -199,7 +199,19 @@ test("review sends users to a resume model gallery before checkout", () => {
   assert.match(files.download, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
 });
-test("model gallery fits the viewport and downloads ats plus print PDFs", () => {
+test("ats stays free while print templates are optional paid add-ons", () => {
+  assert.match(files.landing, /ATS grátis|gratuito|grátis/);
+  assert.match(files.modelos, /Baixar ATS grátis/);
+  assert.match(files.modelos, /Adicionar impressão por/);
+  assert.match(files.modelos, /useState<string \| null>\(null\)/);
+  assert.match(files.checkout, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
+  assert.match(files.checkout, /router\.replace\("\/modelos"\)/);
+  assert.match(files.download, /const mode = searchParams.get\("mode"\)/);
+  assert.match(files.download, /mode === "ats"/);
+  assert.match(files.download, /Baixar ATS/);
+  assert.match(files.download, /Baixar impressão/);
+});
+test("model gallery fits the viewport with ats included on the left", () => {
   assert.match(files.modelos, /h-\[100svh\]/);
   assert.match(files.modelos, /overflow-hidden/);
   assert.match(files.modelos, /lg:grid-cols-\[320px_minmax\(0,1fr\)\]/);
@@ -211,7 +223,10 @@ test("model gallery fits the viewport and downloads ats plus print PDFs", () => 
   assert.match(files.modelos, /<aside className="flex min-h-0 flex-col overflow-y-auto \[scrollbar-width:none\] \[-ms-overflow-style:none\] \[\&::-webkit-scrollbar\]:hidden/);
   assert.match(files.modelos, /<aside[\s\S]*ATS incluso[\s\S]*<TemplateOption template=\{atsResumeTemplate\}/);
   assert.doesNotMatch(files.modelos, /Sempre incluso/);
-  assert.match(files.modelos, /Escolha o modelo de impressão/);
+  assert.match(files.modelos, /Currículos para impressão/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId: "ats-clean" \}\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
+  assert.doesNotMatch(files.download, /Baixar ATS \+ impressão/);
 });
+
+

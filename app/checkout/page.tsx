@@ -6,8 +6,8 @@ import { Copy, QrCode, RotateCcw } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 import { formatPriceBRL } from "@/lib/pricing";
-import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
 import { FORM_STORAGE_KEY, isFormEmpty, type ResumeData } from "@/lib/resume";
+import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
 
 type PaymentResponse = {
   qr_code: string;
@@ -15,9 +15,21 @@ type PaymentResponse = {
   payment_id: string;
 };
 
+const TEMPLATE_STORAGE_KEY = "atsfacil_template";
+
+function formatTemplateName(templateId: string) {
+  return templateId
+    .replace(/^print-/, "")
+    .split("-")
+    .filter(Boolean)
+    .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1))
+    .join(" ");
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<ResumeData | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState("");
   const [payment, setPayment] = useState<PaymentResponse | null>(null);
   const [status, setStatus] = useState<"pending" | "approved" | "rejected">("pending");
   const [loading, setLoading] = useState(true);
@@ -76,6 +88,13 @@ export default function CheckoutPage() {
       return;
     }
 
+    const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+    if (!savedTemplate || !savedTemplate.startsWith("print-")) {
+      router.replace("/modelos");
+      return;
+    }
+
+    setSelectedTemplate(savedTemplate);
     setFormData(parsed);
     createPayment(parsed);
   }, [createPayment, router]);
@@ -118,7 +137,7 @@ export default function CheckoutPage() {
       <main id="main-content" className="flex h-[100svh] items-center justify-center overflow-hidden bg-white px-5 py-10">
         <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700">
           <Spinner />
-          Gerando cobrança Pix…
+          Gerando cobrança Pix...
         </div>
       </main>
     );
@@ -132,7 +151,7 @@ export default function CheckoutPage() {
           <h1 className="mt-3 text-3xl font-bold text-slate-950 text-balance">Não deu para gerar o Pix agora.</h1>
           <p className="mt-4 text-base leading-7 text-slate-600">{error}</p>
           <Button className="mt-6" onClick={() => formData && createPayment(formData)}>
-            Tentar Novamente
+            Tentar novamente
           </Button>
         </section>
       </main>
@@ -147,7 +166,7 @@ export default function CheckoutPage() {
         <div className="shrink-0 border-b border-slate-200 pb-4">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.08em] text-brand">Pague com Pix</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.08em] text-brand">Adicionar impressão</p>
               <h1 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">{formatPriceBRL()}</h1>
             </div>
 
@@ -162,7 +181,7 @@ export default function CheckoutPage() {
             </div>
           </div>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Escaneie o QR Code ou copie o código Pix. A confirmação é automática e o download libera logo depois.
+            O ATS continua gratuito. Aqui você paga apenas pela versão para impressão com foto, liberada assim que o Pix confirmar.
           </p>
         </div>
 
@@ -176,7 +195,7 @@ export default function CheckoutPage() {
               </p>
               <Button className="mt-6" onClick={() => formData && createPayment(formData)}>
                 <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
-                Gerar Novo Código
+                Gerar novo código
               </Button>
             </div>
           ) : (
@@ -200,11 +219,8 @@ export default function CheckoutPage() {
               <div className="min-w-0 space-y-4">
                 <div className="border-b border-slate-200 pb-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Pix Copia e Cola</p>
-                    <div
-                      aria-live="polite"
-                      className="min-h-5 text-right text-xs font-medium text-emerald-700"
-                    >
+                    <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Pix copia e cola</p>
+                    <div aria-live="polite" className="min-h-5 text-right text-xs font-medium text-emerald-700">
                       {copied ? "Código copiado." : ""}
                     </div>
                   </div>
@@ -213,7 +229,7 @@ export default function CheckoutPage() {
                   </p>
                   <Button type="button" variant="secondary" className="mt-3 w-full sm:w-auto" onClick={copyCode}>
                     <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
-                    {copied ? "Copiado" : "Copiar Código Pix"}
+                    {copied ? "Copiado" : "Copiar código Pix"}
                   </Button>
                 </div>
 
@@ -222,7 +238,7 @@ export default function CheckoutPage() {
                     {status === "pending" ? (
                       <>
                         <Spinner className="h-4 w-4" />
-                        Aguardando pagamento…
+                        Aguardando pagamento...
                       </>
                     ) : null}
                     {status === "approved" ? <span className="text-emerald-700">Pagamento confirmado!</span> : null}
@@ -230,7 +246,7 @@ export default function CheckoutPage() {
                   </div>
                   {status === "rejected" ? (
                     <Button onClick={() => formData && createPayment(formData)}>
-                      Tentar Novamente
+                      Tentar novamente
                     </Button>
                   ) : null}
                 </div>
@@ -241,8 +257,13 @@ export default function CheckoutPage() {
                     <li>1. Abra o app do banco.</li>
                     <li>2. Escaneie ou copie o Pix.</li>
                     <li>3. Confirme {formatPriceBRL()}.</li>
-                    <li>4. Aguarde liberar o PDF.</li>
+                    <li>4. O ATS segue grátis e a impressão libera em seguida.</li>
                   </ol>
+                  {selectedTemplate ? (
+                    <p className="mt-3 text-xs font-medium uppercase tracking-[0.08em] text-slate-400">
+                      Modelo selecionado: {formatTemplateName(selectedTemplate)}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>

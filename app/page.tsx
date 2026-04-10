@@ -13,7 +13,7 @@ function EnvBanner() {
   );
 }
 
-const proofPoints = ["+500 candidatos", "Pix em segundos", "Sem assinatura", "PDF gerado no navegador"];
+const proofPoints = ["+500 candidatos", "ATS grátis", "Sem assinatura", "PDF gerado no navegador"];
 
 const howItWorks = [
   {
@@ -26,7 +26,7 @@ const howItWorks = [
   },
   {
     title: "Baixe",
-    description: `Pague ${formatPriceBRL()} via Pix e receba o PDF ATS pronto para usar.`,
+    description: `Baixe o ATS grátis ou adicione a versão para impressão por ${formatPriceBRL()}.`,
   },
 ];
 
@@ -41,7 +41,7 @@ const principles = [
   },
   {
     title: "Pagamento Pontual",
-    description: "Você preenche e revisa sem pagar. O Pix entra só quando o currículo estiver pronto para download.",
+    description: "Você preenche e revisa sem pagar. O Pix entra só se quiser adicionar um currículo para impressão com foto.",
   },
 ];
 
@@ -96,14 +96,14 @@ export default function Home() {
               Monte um currículo profissional sem brigar com layout.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-700 sm:text-xl">
-              Preencha seus dados passo a passo, revise com calma e baixe um PDF objetivo para passar pelos filtros automáticos das empresas.
+              Preencha seus dados passo a passo, revise com calma e baixe grátis um PDF ATS objetivo para passar pelos filtros automáticos das empresas.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <GoogleButton className="w-full sm:w-auto">
                 Criar Meu Currículo Grátis
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </GoogleButton>
-              <p className="text-sm font-medium text-slate-600">Você só paga {priceLabel} no momento do download.</p>
+              <p className="text-sm font-medium text-slate-600">O ATS é grátis. A impressão com foto custa {priceLabel}.</p>
             </div>
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function Home() {
               Pagamento único via Pix
             </div>
             <h2 className="mt-4 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
-              Revise primeiro. Pague {priceLabel} só para baixar.
+              Revise primeiro. Baixe o ATS grátis ou adicione impressão por {priceLabel}.
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-600">
               Sem mensalidade, sem plano escondido e sem travar o preenchimento antes da revisão.
@@ -204,9 +204,9 @@ export default function Home() {
           </div>
 
           <div className="min-w-[240px] border-t border-slate-200 pt-6 lg:border-l lg:border-t-0 lg:pl-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Preço Atual</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Impressão opcional</p>
             <p className="mt-3 text-5xl font-bold text-slate-950">{priceLabel}</p>
-            <p className="mt-2 text-sm text-slate-500">Pagamento único · Sem assinatura</p>
+            <p className="mt-2 text-sm text-slate-500">ATS grátis · Pagamento único · Sem assinatura</p>
             <GoogleButton className="mt-6 w-full">Começar Agora</GoogleButton>
           </div>
         </div>

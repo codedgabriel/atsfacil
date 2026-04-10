@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Camera, Check, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/Button";
 import { formatPriceBRL } from "@/lib/pricing";
-import { FORM_STORAGE_KEY, getResumeLinks, isFormEmpty, normalizeResumeData, type ResumeData } from "@/lib/resume";
+import { FORM_STORAGE_KEY, isFormEmpty, normalizeResumeData, type ResumeData } from "@/lib/resume";
 
 type ResumeTemplate = {
   id: string;
@@ -17,7 +17,6 @@ type ResumeTemplate = {
 };
 
 const TEMPLATE_STORAGE_KEY = "atsfacil_template";
-const DEFAULT_PRINT_TEMPLATE_ID = "print-executivo";
 
 const atsResumeTemplate: ResumeTemplate = {
   id: "ats-clean",
@@ -47,7 +46,6 @@ const printResumeTemplates: ResumeTemplate[] = [
   { id: "print-consultor", name: "Consultor", label: "Impressão", type: "print", accentClass: "bg-stone-800", layout: "left-photo" },
 ];
 
-const allTemplates = [atsResumeTemplate, ...printResumeTemplates];
 const printTemplateIds = new Set(printResumeTemplates.map((template) => template.id));
 
 function previewText(formData: ResumeData | null) {
@@ -246,7 +244,7 @@ function TemplateOption({
 export default function ModelosPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<ResumeData | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState(DEFAULT_PRINT_TEMPLATE_ID);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(FORM_STORAGE_KEY);
@@ -264,6 +262,7 @@ export default function ModelosPage() {
       setFormData(parsed);
     } catch {
       router.replace("/wizard");
+      return;
     }
 
     const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
@@ -273,16 +272,25 @@ export default function ModelosPage() {
   }, [router]);
 
   const currentTemplate = useMemo(
-    () => allTemplates.find((template) => template.id === selectedTemplate) ?? printResumeTemplates[0],
+    () => (selectedTemplate ? printResumeTemplates.find((template) => template.id === selectedTemplate) ?? null : null),
     [selectedTemplate],
   );
 
   function selectTemplate(templateId: string) {
-    setSelectedTemplate(templateId);
-    localStorage.setItem(TEMPLATE_STORAGE_KEY, templateId);
+    setSelectedTemplate((current) => {
+      const next = current === templateId ? null : templateId;
+      if (next) localStorage.setItem(TEMPLATE_STORAGE_KEY, next);
+      else localStorage.removeItem(TEMPLATE_STORAGE_KEY);
+      return next;
+    });
+  }
+
+  function goAtsDownload() {
+    router.push("/download?mode=ats");
   }
 
   function goCheckout() {
+    if (!selectedTemplate) return;
     localStorage.setItem(TEMPLATE_STORAGE_KEY, selectedTemplate);
     router.push("/checkout");
   }
@@ -302,19 +310,26 @@ export default function ModelosPage() {
 
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.08em] text-blue-600">Modelos do currículo</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-950 text-balance">Escolha a impressão.</h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600">O ATS já vai junto. Escolha a versão com foto.</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">O ATS gratuito já está liberado. A impressão só entra se você escolher um modelo com foto.</p>
 
           <div className="mt-3 border-y border-slate-200 py-2">
             <p className="text-sm font-semibold text-slate-950">ATS incluso</p>
             <div className="mt-2 max-w-[140px]">
               <TemplateOption template={atsResumeTemplate} selected formData={formData} onSelect={() => undefined} />
             </div>
-            <p className="mt-2 text-sm leading-6 text-slate-600">+ {currentTemplate.name} com foto.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              {currentTemplate ? `Impressão adicionada: ${currentTemplate.name}.` : "A versão para impressão é opcional."}
+            </p>
           </div>
 
-          <Button type="button" className="mt-4 w-full" onClick={goCheckout}>
-            Continuar para Pix · {formatPriceBRL()}
-          </Button>
+          <div className="mt-4 space-y-2">
+            <Button type="button" variant="secondary" className="w-full" onClick={goAtsDownload}>
+              Baixar ATS grátis
+            </Button>
+            <Button type="button" className="w-full" onClick={goCheckout} disabled={!selectedTemplate}>
+              Adicionar impressão por {formatPriceBRL()}
+            </Button>
+          </div>
           <p className="mt-2 flex items-center gap-2 text-sm leading-6 text-slate-500">
             <ShieldCheck className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
             Seu conteúdo continua salvo no navegador.
@@ -327,7 +342,7 @@ export default function ModelosPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Galeria</p>
               <h2 className="mt-2 text-2xl font-bold text-slate-950">Currículos para impressão</h2>
             </div>
-            <p className="max-w-lg text-sm leading-6 text-slate-500">Escolha o modelo de impressão que vai baixar junto com o ATS.</p>
+            <p className="max-w-lg text-sm leading-6 text-slate-500">Escolha um modelo à direita para adicionar a versão com foto ao download.</p>
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto py-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">

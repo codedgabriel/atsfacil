@@ -412,7 +412,7 @@ export default function WizardPage() {
 
             <div className="space-y-2 border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">
               <p>Seus dados ficam salvos automaticamente no navegador durante todo o preenchimento.</p>
-              <p>O PDF ATS é liberado por {formatPriceBRL()} em pagamento único via Pix.</p>
+              <p>O PDF ATS é gratuito. A versão para impressão entra só se você escolher um modelo pago.</p>
             </div>
           </aside>
 
@@ -906,11 +906,11 @@ export default function WizardPage() {
                 ) : (
                   <div className="space-y-3">
                     <Button type="button" className="w-full" onClick={goCheckout}>
-                      Gerar meu currículo por {formatPriceBRL()}
+                      Escolher formato do currículo
                     </Button>
                     <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600">
                       <Lock className="h-4 w-4" aria-hidden="true" />
-                      Pagamento único via Pix · Sem assinatura
+                      ATS grátis · Impressão opcional por {formatPriceBRL()}
                     </p>
                   </div>
                 )}

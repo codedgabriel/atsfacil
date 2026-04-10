@@ -15,14 +15,36 @@ function DownloadInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paymentId = searchParams.get("payment_id");
+  const mode = searchParams.get("mode");
   const [formData, setFormData] = useState<ResumeData | null>(null);
   const [templateId, setTemplateId] = useState(DEFAULT_PRINT_TEMPLATE_ID);
+  const [downloadMode, setDownloadMode] = useState<"ats" | "paid">("ats");
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
     async function check() {
+      const saved = localStorage.getItem(FORM_STORAGE_KEY);
+      if (!saved) {
+        router.replace("/wizard");
+        return;
+      }
+
+      setFormData(JSON.parse(saved));
+
+      if (mode === "ats") {
+        setDownloadMode("ats");
+        setChecking(false);
+        return;
+      }
+
       if (!paymentId) {
         router.replace("/checkout");
+        return;
+      }
+
+      const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+      if (!savedTemplate || !savedTemplate.startsWith("print-")) {
+        router.replace("/modelos");
         return;
       }
 
@@ -34,56 +56,71 @@ function DownloadInner() {
         return;
       }
 
-      const saved = localStorage.getItem(FORM_STORAGE_KEY);
-      if (!saved) {
-        router.replace("/wizard");
-        return;
-      }
-
-      setFormData(JSON.parse(saved));
-      const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY) || DEFAULT_PRINT_TEMPLATE_ID;
-      setTemplateId(savedTemplate.startsWith("print-") ? savedTemplate : DEFAULT_PRINT_TEMPLATE_ID);
+      setTemplateId(savedTemplate);
+      setDownloadMode("paid");
       setChecking(false);
     }
 
     check();
-  }, [paymentId, router]);
+  }, [mode, paymentId, router]);
 
   if (checking) {
     return (
       <main id="main-content" className="flex h-[100svh] items-center justify-center overflow-hidden bg-white px-5">
         <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700">
           <Spinner />
-          Conferindo pagamento…
+          Conferindo acesso...
         </div>
       </main>
     );
   }
+
+  const isPaidMode = downloadMode === "paid";
 
   return (
     <main id="main-content" className="flex h-[100svh] items-center justify-center overflow-hidden bg-white px-4 py-6 sm:px-6">
       <section className="w-full max-w-2xl border-y border-slate-200 py-8 text-center sm:py-10">
         <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
           <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-          Pagamento confirmado
+          {isPaidMode ? "Pagamento confirmado" : "ATS liberado"}
         </div>
 
-        <h1 className="mt-5 text-4xl font-bold text-slate-950 text-balance sm:text-5xl">Seu currículo está pronto.</h1>
+        <h1 className="mt-5 text-4xl font-bold text-slate-950 text-balance sm:text-5xl">
+          {isPaidMode ? "Seu currículo está pronto." : "Seu currículo ATS está pronto."}
+        </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
-          Obrigado pelo pagamento. Clique abaixo para baixar seu PDF final.
+          {isPaidMode
+            ? "O ATS continua incluso e a versão para impressão já pode ser baixada separadamente."
+            : "Baixe agora a versão ATS gratuita. Se quiser uma versão para impressão com foto, escolha um modelo depois."}
         </p>
 
-        <Button
-          className="mt-8 w-full sm:w-auto"
-          onClick={() => {
-            if (!formData) return;
-            generatePDF(formData, { templateId: "ats-clean" });
-            generatePDF(formData, { templateId });
-          }}
-        >
-          <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-          Baixar ATS + impressão
-        </Button>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => {
+              if (!formData) return;
+              generatePDF(formData, { templateId: "ats-clean" });
+            }}
+          >
+            <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+            Baixar ATS
+          </Button>
+
+          {isPaidMode ? (
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full sm:w-auto"
+              onClick={() => {
+                if (!formData) return;
+                generatePDF(formData, { templateId });
+              }}
+            >
+              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+              Baixar impressão
+            </Button>
+          ) : null}
+        </div>
 
         <div className="mt-6 grid gap-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">
           <p>Gerado localmente no navegador.</p>
@@ -101,7 +138,7 @@ export default function DownloadPage() {
         <main className="flex h-[100svh] items-center justify-center overflow-hidden bg-white px-5">
           <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700">
             <Spinner />
-            Carregando…
+            Carregando...
           </div>
         </main>
       }
