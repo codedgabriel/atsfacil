@@ -67,7 +67,10 @@ test("wizard step rail has quick navigation and styled scrollbars", () => {
 test("wizard uses three columns with an ATS score panel", () => {
   assert.match(files.wizard, /calculateAtsScore/);
   assert.match(files.wizard, /Score ATS/);
-  assert.match(files.wizard, /lg:grid-cols-\[190px_minmax\(0,1fr\)_240px\]/);
+  assert.match(files.wizard, /aria-label="Pontuação ATS"/);
+  assert.match(files.wizard, /Próxima melhoria/);
+  assert.match(files.wizard, /atsScore\.nextImprovement/);
+  assert.match(files.wizard, /lg:grid-cols-\[190px_minmax\(0,1fr\)_280px\]/);
 });
 
 test("landing page uses the editorial minimal direction", () => {

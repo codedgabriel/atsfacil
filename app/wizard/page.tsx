@@ -275,7 +275,7 @@ export default function WizardPage() {
 
   return (
     <main id="main-content" className="h-[100svh] overflow-hidden bg-white">
-      <div className="mx-auto grid h-full max-w-7xl gap-6 px-4 py-4 sm:px-6 sm:py-5 lg:grid-cols-[190px_minmax(0,1fr)_240px]">
+      <div className="mx-auto grid h-full max-w-7xl gap-6 px-4 py-4 sm:px-6 sm:py-5 lg:grid-cols-[190px_minmax(0,1fr)_280px]">
           <aside className={`hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block ${scrollAreaClass}`}>
             <nav aria-label="Etapas do currículo">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Etapas</p>
@@ -814,10 +814,15 @@ export default function WizardPage() {
             </div>
           </section>
 
-          <aside className={`hidden min-h-0 overflow-y-auto border-l border-slate-200 pl-6 lg:block ${scrollAreaClass}`} aria-label="Score ATS">
-            <div className="space-y-6">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Score ATS</p>
+          <aside className={`hidden min-h-0 overflow-y-auto border-l border-slate-200 pl-6 lg:block ${scrollAreaClass}`} aria-label="Pontuação ATS">
+            <div className="space-y-6" aria-live="polite">
+              <div className="min-w-0">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Score ATS</p>
+                  <p className="text-xs font-semibold tabular-nums text-slate-500">
+                    {atsScore.completedChecks}/{atsScore.totalChecks} completos
+                  </p>
+                </div>
                 <div className="mt-4 flex items-end gap-2">
                   <span className="text-5xl font-bold tabular-nums text-slate-950">{atsScore.score}</span>
                   <span className="pb-2 text-sm font-semibold text-slate-500">/100</span>
@@ -825,28 +830,63 @@ export default function WizardPage() {
                 <p className="mt-2 text-sm font-semibold text-blue-600">{atsScore.level}</p>
               </div>
 
-              <div className="h-2 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
-                <div className="h-full rounded-full bg-blue-600 transition-[width] duration-300" style={{ width: `${atsScore.score}%` }} />
+              <div className="space-y-2">
+                <div className="h-2 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+                  <div className="h-full rounded-full bg-blue-600 transition-[width] duration-300" style={{ width: `${atsScore.score}%` }} />
+                </div>
+                <div className="flex justify-between text-[11px] font-medium tabular-nums text-slate-400">
+                  <span>0</span>
+                  <span>50</span>
+                  <span>75</span>
+                  <span>90</span>
+                </div>
               </div>
 
-              <div className="space-y-3 border-t border-slate-200 pt-5">
+              <div className="border-y border-slate-200 py-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Próxima melhoria</p>
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-950">{atsScore.nextImprovement.label}</p>
+                <p className="mt-1 break-words text-sm leading-6 text-slate-600">{atsScore.nextImprovement.action}</p>
+              </div>
+
+              <div className="space-y-3">
                 {atsScore.checks.map((check) => (
-                  <div key={check.label} className="border-b border-slate-200 pb-3">
+                  <div key={check.label} className="min-w-0 border-b border-slate-200 pb-3 last:border-b-0">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm font-semibold leading-6 text-slate-800">{check.label}</p>
-                      <span className="text-xs font-semibold tabular-nums text-slate-500">
+                      <div className="min-w-0">
+                        <p className="break-words text-sm font-semibold leading-6 text-slate-800">{check.label}</p>
+                        <p className="mt-1 break-words text-xs leading-5 text-slate-500">{check.description}</p>
+                      </div>
+                      <span className="shrink-0 text-xs font-semibold tabular-nums text-slate-500">
                         {check.points}/{check.max}
                       </span>
                     </div>
-                    <p className={`mt-1 text-xs leading-5 ${check.complete ? "text-emerald-700" : "text-slate-500"}`}>
-                      {check.complete ? "Completo" : "Pode melhorar"}
-                    </p>
+                    <div className="mt-2 flex items-center justify-between gap-3">
+                      <p
+                        className={`text-xs font-semibold ${
+                          check.status === "Completo"
+                            ? "text-emerald-700"
+                            : check.status === "Parcial"
+                              ? "text-blue-700"
+                              : "text-slate-500"
+                        }`}
+                      >
+                        {check.status}
+                      </p>
+                      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+                        <div
+                          className={`h-full rounded-full transition-[width] duration-300 ${
+                            check.status === "Completo" ? "bg-emerald-600" : check.status === "Parcial" ? "bg-blue-600" : "bg-slate-300"
+                          }`}
+                          style={{ width: `${(check.points / check.max) * 100}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
 
               <p className="border-t border-slate-200 pt-5 text-sm leading-6 text-slate-600">
-                O score é uma estimativa de preenchimento. Quanto mais completo e objetivo o currículo, melhor tende a ser a leitura por ATS.
+                Estimativa baseada em completude, palavras-chave, clareza e leitura simples para sistemas ATS.
               </p>
             </div>
           </aside>
