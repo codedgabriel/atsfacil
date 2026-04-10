@@ -71,6 +71,27 @@ const legacyLanguageLevels: Record<string, string> = {
   Intermediario: "Intermediário",
   Avancado: "Avançado",
 };
+const legacySoftSkillLabels: Record<string, string> = {
+  Comunicacao: "Comunicação",
+  Lideranca: "Liderança",
+  "Resolucao de problemas": "Resolução de problemas",
+  Organizacao: "Organização",
+  "Pensamento analitico": "Pensamento analítico",
+  "Gestao do tempo": "Gestão do tempo",
+  "Atencao aos detalhes": "Atenção aos detalhes",
+  Negociacao: "Negociação",
+  "Tomada de decisao": "Tomada de decisão",
+  "Visao estrategica": "Visão estratégica",
+  Colaboracao: "Colaboração",
+  "Aprendizado rapido": "Aprendizado rápido",
+  "Comunicacao visual": "Comunicação visual",
+  "Gestao de conflitos": "Gestão de conflitos",
+  Resiliencia: "Resiliência",
+  "Inteligencia emocional": "Inteligência emocional",
+  "Capacidade de liderar reunioes": "Capacidade de liderar reuniões",
+  "Pensamento critico": "Pensamento crítico",
+  "Orientacao a resultados": "Orientação a resultados",
+};
 export const additionalLinkTypes: AdditionalLinkType[] = ["GitHub", "GitLab", "Behance", "Portfolio", "Site", "Outro"];
 export const technicalSkillSuggestions = [
   "HTML",
@@ -125,34 +146,34 @@ export const technicalSkillSuggestions = [
   "Kanban",
 ];
 export const softSkillSuggestions = [
-  "Comunicacao",
+  "Comunicação",
   "Trabalho em equipe",
-  "Lideranca",
+  "Liderança",
   "Proatividade",
-  "Resolucao de problemas",
+  "Resolução de problemas",
   "Adaptabilidade",
   "Criatividade",
-  "Organizacao",
-  "Pensamento analitico",
-  "Gestao do tempo",
-  "Atencao aos detalhes",
+  "Organização",
+  "Pensamento analítico",
+  "Gestão do tempo",
+  "Atenção aos detalhes",
   "Empatia",
-  "Negociacao",
-  "Tomada de decisao",
-  "Visao estrategica",
-  "Colaboracao",
-  "Aprendizado rapido",
+  "Negociação",
+  "Tomada de decisão",
+  "Visão estratégica",
+  "Colaboração",
+  "Aprendizado rápido",
   "Autonomia",
   "Flexibilidade",
   "Escuta ativa",
-  "Comunicacao visual",
+  "Comunicação visual",
   "Senso de urgencia",
-  "Gestao de conflitos",
-  "Resiliencia",
-  "Inteligencia emocional",
-  "Capacidade de liderar reunioes",
-  "Pensamento critico",
-  "Orientacao a resultados",
+  "Gestão de conflitos",
+  "Resiliência",
+  "Inteligência emocional",
+  "Capacidade de liderar reuniões",
+  "Pensamento crítico",
+  "Orientação a resultados",
 ];
 
 export const emptyExperience = (): Experience => ({
@@ -225,9 +246,14 @@ export function normalizeEducationLevel(level: string) {
   return legacyEducationLevels[level] ?? level;
 }
 
+export function normalizeSoftSkillLabel(label: string) {
+  return legacySoftSkillLabels[label] ?? label;
+}
+
 export function normalizeResumeData(data: ResumeData) {
   return {
     ...data,
+    habilidades_comportamentais: data.habilidades_comportamentais.map(normalizeSoftSkillLabel),
     formacoes: data.formacoes.map((item) => ({
       ...item,
       nivel: normalizeEducationLevel(item.nivel),

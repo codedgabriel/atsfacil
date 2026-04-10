@@ -39,7 +39,7 @@ test("soft skill text starts after the full comportamentais label", () => {
   const labelIndex = operations.findIndex((operation) => operation.includes("(Comportamentais:) Tj"));
   assert.notEqual(labelIndex, -1);
 
-  const valueOperation = operations.slice(labelIndex + 1).find((operation) => operation.includes("(Visao estrategica"));
+  const valueOperation = operations.slice(labelIndex + 1).find((operation) => operation.includes("(Vis"));
   assert.ok(valueOperation);
 
   doc.setFont("helvetica", "bold");

@@ -130,6 +130,15 @@ test("tag input pills and suggestions can wrap long content", () => {
   assert.match(files.tagInput, /break-words/);
 });
 
+test("behavioral skill suggestions keep portuguese accents", () => {
+  assert.match(files.resume, /Comunica\u00e7\u00e3o/);
+  assert.match(files.resume, /Lideran\u00e7a/);
+  assert.match(files.resume, /Resolu\u00e7\u00e3o de problemas/);
+  assert.match(files.resume, /Vis\u00e3o estrat\u00e9gica/);
+  assert.match(files.resume, /normalizeSoftSkillLabel/);
+  assert.match(files.pdf, /normalizeSoftSkillLabel/);
+});
+
 test("language levels keep portuguese accents and normalize old saved values", () => {
   assert.match(files.resume, /Básico/);
   assert.match(files.resume, /Intermediário/);

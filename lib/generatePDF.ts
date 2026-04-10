@@ -1,5 +1,5 @@
 ﻿import { jsPDF } from "jspdf";
-import { getResumeLinks, type ResumeData } from "@/lib/resume";
+import { getResumeLinks, normalizeSoftSkillLabel, type ResumeData } from "@/lib/resume";
 
 type GeneratePDFOptions = {
   save?: boolean;
@@ -179,7 +179,7 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
   if (formData.habilidades_tecnicas.length || formData.habilidades_comportamentais.length) {
     y = sectionHeader(doc, "HABILIDADES", y);
     y = keyValueParagraph(doc, "T\u00e9cnicas", formData.habilidades_tecnicas.join(", "), y);
-    y = keyValueParagraph(doc, "Comportamentais", formData.habilidades_comportamentais.join(", "), y);
+    y = keyValueParagraph(doc, "Comportamentais", formData.habilidades_comportamentais.map(normalizeSoftSkillLabel).join(", "), y);
     y += 2;
   }
 
