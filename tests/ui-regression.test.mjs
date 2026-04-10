@@ -7,6 +7,7 @@ const files = {
   wizard: readFileSync(new URL("../app/wizard/page.tsx", import.meta.url), "utf8"),
   checkout: readFileSync(new URL("../app/checkout/page.tsx", import.meta.url), "utf8"),
   paymentRoute: readFileSync(new URL("../app/api/create-payment/route.ts", import.meta.url), "utf8"),
+  helpTip: readFileSync(new URL("../components/HelpTip.tsx", import.meta.url), "utf8"),
   tagInput: readFileSync(new URL("../components/TagInput.tsx", import.meta.url), "utf8"),
   pdf: readFileSync(new URL("../lib/generatePDF.ts", import.meta.url), "utf8"),
 };
@@ -87,6 +88,17 @@ test("wizard adds ATS help tips to high-impact fields", () => {
   assert.match(files.wizard, /verbos de a/);
   assert.match(files.wizard, /5 habilidades t/);
   assert.match(files.wizard, /cargo desejado/);
+});
+
+test("help tips are not clipped or stuck after click", () => {
+  assert.match(files.helpTip, /position:\s*"fixed"/);
+  assert.match(files.helpTip, /getBoundingClientRect/);
+  assert.match(files.helpTip, /onMouseEnter/);
+  assert.match(files.helpTip, /onMouseLeave/);
+  assert.match(files.helpTip, /onBlur/);
+  assert.match(files.helpTip, /onClick/);
+  assert.match(files.helpTip, /\.blur\(\)/);
+  assert.doesNotMatch(files.helpTip, /group-focus-within:block|absolute right-0/);
 });
 
 test("landing page uses the editorial minimal direction", () => {
