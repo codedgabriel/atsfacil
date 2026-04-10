@@ -523,7 +523,7 @@ export default function WizardPage() {
                               onChange={(e) => updateList<Experience>("experiencias", item.id, { cargo: e.target.value })}
                               error={errors[`experiencias.${index}.cargo`]}
                             />
-                            <div className="grid gap-6 sm:grid-cols-2">
+                            <div className={`grid gap-6 ${isCurrentValue(item.data_fim, "Atual") ? "sm:grid-cols-1" : "sm:grid-cols-2"}`}>
                               <Input
                                 label="Data início"
                                 placeholder="MM/AAAA"
@@ -532,15 +532,16 @@ export default function WizardPage() {
                                 value={formatMonthYearInput(item.data_inicio)}
                                 onChange={(e) => updateList<Experience>("experiencias", item.id, { data_inicio: formatMonthYearInput(e.target.value) })}
                               />
-                              <Input
-                                label="Data fim"
-                                placeholder="MM/AAAA"
-                                inputMode="numeric"
-                                maxLength={7}
-                                disabled={isCurrentValue(item.data_fim, "Atual")}
-                                value={isCurrentValue(item.data_fim, "Atual") ? "" : formatMonthYearInput(item.data_fim)}
-                                onChange={(e) => updateList<Experience>("experiencias", item.id, { data_fim: formatMonthYearInput(e.target.value) })}
-                              />
+                              {!isCurrentValue(item.data_fim, "Atual") ? (
+                                <Input
+                                  label="Data fim"
+                                  placeholder="MM/AAAA"
+                                  inputMode="numeric"
+                                  maxLength={7}
+                                  value={formatMonthYearInput(item.data_fim)}
+                                  onChange={(e) => updateList<Experience>("experiencias", item.id, { data_fim: formatMonthYearInput(e.target.value) })}
+                                />
+                              ) : null}
                             </div>
                             <label className="flex items-start gap-3 text-sm leading-7 text-slate-700">
                               <input
