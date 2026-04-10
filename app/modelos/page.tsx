@@ -6,6 +6,7 @@ import { ArrowLeft, Check, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/Button";
 import { PhotoUploadModal } from "@/components/PhotoUploadModal";
 import { PrintTemplatePreview } from "@/components/PrintTemplatePreview";
+import { PRINT_TEST_MODE, canUsePrintTestBypass } from "@/lib/printTestBypass";
 import {
   DEFAULT_PRINT_TEMPLATE_ID,
   PHOTO_STORAGE_KEY,
@@ -141,10 +142,12 @@ export default function ModelosPage() {
   const [formData, setFormData] = useState<ResumeData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [selectedTemplateForCheckout, setSelectedTemplateForCheckout] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<"checkout" | "test">("checkout");
   const [photoDataUrl, setPhotoDataUrl] = useState("");
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [photoError, setPhotoError] = useState("");
   const [photoBusy, setPhotoBusy] = useState(false);
+  const [canBypassPayment, setCanBypassPayment] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(FORM_STORAGE_KEY);
@@ -174,6 +177,7 @@ export default function ModelosPage() {
 
     const savedPhoto = localStorage.getItem(PHOTO_STORAGE_KEY);
     if (savedPhoto) setPhotoDataUrl(savedPhoto);
+    setCanBypassPayment(canUsePrintTestBypass(window.location.hostname));
   }, [router]);
 
   const currentTemplate = useMemo(
@@ -189,9 +193,10 @@ export default function ModelosPage() {
     router.push("/download?mode=ats");
   }
 
-  function openPhotoModal() {
+  function openPhotoModal(action: "checkout" | "test") {
     if (!selectedTemplate) return;
     setSelectedTemplateForCheckout(selectedTemplate);
+    setPendingAction(action);
     setPhotoError("");
     setPhotoModalOpen(true);
   }
@@ -232,7 +237,7 @@ export default function ModelosPage() {
 
     localStorage.setItem(TEMPLATE_STORAGE_KEY, selectedTemplateForCheckout);
     localStorage.setItem(PHOTO_STORAGE_KEY, photoDataUrl);
-    router.push("/checkout");
+    router.push(pendingAction === "test" ? `/download?mode=${PRINT_TEST_MODE}` : "/checkout");
   }
 
   return (
@@ -269,9 +274,14 @@ export default function ModelosPage() {
               <Button type="button" variant="secondary" className="w-full" onClick={goAtsDownload}>
                 Baixar ATS grátis
               </Button>
-              <Button type="button" className="w-full" onClick={openPhotoModal} disabled={!selectedTemplate}>
+              <Button type="button" className="w-full" onClick={() => openPhotoModal("checkout")} disabled={!selectedTemplate}>
                 Adicionar impressão por {formatPriceBRL()}
               </Button>
+              {canBypassPayment ? (
+                <Button type="button" variant="ghost" className="w-full" onClick={() => openPhotoModal("test")} disabled={!selectedTemplate}>
+                  Testar impressão sem pagamento
+                </Button>
+              ) : null}
             </div>
 
             <div className="mt-3 border-t border-slate-200 pt-3 text-sm leading-6 text-slate-500">

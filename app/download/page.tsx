@@ -6,6 +6,7 @@ import { CheckCircle2, Download } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 import { generatePDF } from "@/lib/generatePDF";
+import { PRINT_TEST_MODE, canUsePrintTestBypass } from "@/lib/printTestBypass";
 import {
   PHOTO_STORAGE_KEY,
   TEMPLATE_STORAGE_KEY,
@@ -37,6 +38,21 @@ function DownloadInner() {
 
       if (mode === "ats") {
         setDownloadMode("ats");
+        setChecking(false);
+        return;
+      }
+
+      if (mode === PRINT_TEST_MODE && canUsePrintTestBypass(window.location.hostname)) {
+        const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+        const savedPhoto = localStorage.getItem(PHOTO_STORAGE_KEY);
+        if (!savedTemplate || !savedTemplate.startsWith("print-") || !savedPhoto) {
+          router.replace("/modelos");
+          return;
+        }
+
+        setTemplateId(savedTemplate as PrintTemplateId);
+        setPhotoDataUrl(savedPhoto);
+        setDownloadMode("paid");
         setChecking(false);
         return;
       }

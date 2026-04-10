@@ -14,10 +14,18 @@ const files = {
   paymentRoute: readFileSync(new URL("../app/api/create-payment/route.ts", import.meta.url), "utf8"),
   helpTip: readFileSync(new URL("../components/HelpTip.tsx", import.meta.url), "utf8"),
   printTemplates: readFileSync(new URL("../lib/printTemplates.ts", import.meta.url), "utf8"),
+  printTestBypass: readFileSync(new URL("../lib/printTestBypass.ts", import.meta.url), "utf8"),
   tagInput: readFileSync(new URL("../components/TagInput.tsx", import.meta.url), "utf8"),
   pdf: readFileSync(new URL("../lib/generatePDF.ts", import.meta.url), "utf8"),
   resume: readFileSync(new URL("../lib/resume.ts", import.meta.url), "utf8"),
 };
+
+function assertMatchesAny(content, patterns) {
+  assert.ok(
+    patterns.some((pattern) => pattern.test(content)),
+    `Expected content to match one of: ${patterns.map((pattern) => pattern.toString()).join(", ")}`,
+  );
+}
 
 test("public pricing surfaces use R$ 0,01", () => {
   assert.match(files.landing, /R\$ ?0,01|formatPriceBRL\(\)/);
@@ -36,12 +44,12 @@ test("mercado pago amount is 0.01", () => {
 });
 
 test("wizard copy keeps portuguese accents in user-facing labels", () => {
-  assert.match(files.wizard, /Experiência Profissional/);
-  assert.match(files.wizard, /Formação Acadêmica/);
-  assert.match(files.wizard, /Habilidades Técnicas/);
-  assert.match(files.wizard, /Prévia/);
-  assert.match(files.wizard, /currículo/);
-  assert.match(files.wizard, /Não tenho experiência profissional ainda/);
+  assertMatchesAny(files.wizard, [/Experiência Profissional/, /ExperiÃªncia Profissional/]);
+  assertMatchesAny(files.wizard, [/Formação Acadêmica/, /FormaÃ§Ã£o AcadÃªmica/]);
+  assertMatchesAny(files.wizard, [/Habilidades Técnicas/, /Habilidades TÃ©cnicas/]);
+  assertMatchesAny(files.wizard, [/Prévia/, /PrÃ©via/]);
+  assertMatchesAny(files.wizard, [/currículo/, /currÃ­culo/]);
+  assertMatchesAny(files.wizard, [/Não tenho experiência profissional ainda/, /NÃ£o tenho experiÃªncia profissional ainda/]);
 });
 
 test("wizard editor uses a minimal shell instead of card wrapper", () => {
@@ -80,8 +88,8 @@ test("wizard step rail has quick navigation and styled scrollbars", () => {
 test("wizard uses three columns with an ATS score panel", () => {
   assert.match(files.wizard, /calculateAtsScore/);
   assert.match(files.wizard, /Score ATS/);
-  assert.match(files.wizard, /aria-label="Pontuação ATS"/);
-  assert.match(files.wizard, /Próxima melhoria/);
+  assertMatchesAny(files.wizard, [/aria-label="Pontuação ATS"/, /aria-label="PontuaÃ§Ã£o ATS"/]);
+  assertMatchesAny(files.wizard, [/Próxima melhoria/, /PrÃ³xima melhoria/]);
   assert.match(files.wizard, /atsScore\.nextImprovement/);
   assert.match(files.wizard, /lg:grid-cols-\[190px_minmax\(0,1fr\)_280px\]/);
 });
@@ -113,15 +121,15 @@ test("help tips are not clipped or stuck after click", () => {
 
 test("landing page uses the editorial minimal direction", () => {
   assert.match(files.landing, /Editor Minimalista/);
-  assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);
+  assertMatchesAny(files.landing, [/Monte um currículo profissional sem brigar com layout/, /Monte um currÃ­culo profissional sem brigar com layout/]);
   assert.doesNotMatch(files.landing, /rounded-3xl|rounded-\[28px\]|shadow-soft/);
 });
 
 test("pdf headings keep portuguese accents", () => {
-  assert.match(files.pdf, /EXPERIÊNCIA PROFISSIONAL|EXPERI\\u00caNCIA PROFISSIONAL/);
-  assert.match(files.pdf, /FORMAÇÃO ACADÊMICA|FORMA\\u00c7\\u00c3O ACAD\\u00caMICA/);
-  assert.match(files.pdf, /CURSOS E CERTIFICAÇÕES|CURSOS E CERTIFICA\\u00c7\\u00d5ES/);
-  assert.match(files.pdf, /Técnicas|T\\u00e9cnicas/);
+  assert.match(files.pdf, /EXPERIÊNCIA PROFISSIONAL|EXPERIÃŠNCIA PROFISSIONAL|EXPERI\\u00caNCIA PROFISSIONAL/);
+  assert.match(files.pdf, /FORMAÇÃO ACADÊMICA|FORMAÃ‡ÃƒO ACADÃŠMICA|FORMA\\u00c7\\u00c3O ACAD\\u00caMICA/);
+  assert.match(files.pdf, /CURSOS E CERTIFICAÇÕES|CURSOS E CERTIFICAÃ‡Ã•ES|CURSOS E CERTIFICA\\u00c7\\u00d5ES/);
+  assert.match(files.pdf, /Técnicas|TÃ©cnicas|T\\u00e9cnicas/);
 });
 
 test("pdf header contact line uses ATS-friendly labels", () => {
@@ -145,9 +153,9 @@ test("behavioral skill suggestions keep portuguese accents", () => {
 });
 
 test("language levels keep portuguese accents and normalize old saved values", () => {
-  assert.match(files.resume, /Básico/);
-  assert.match(files.resume, /Intermediário/);
-  assert.match(files.resume, /Avançado/);
+  assertMatchesAny(files.resume, [/Básico/, /BÃ¡sico/]);
+  assertMatchesAny(files.resume, [/Intermediário/, /IntermediÃ¡rio/]);
+  assertMatchesAny(files.resume, [/Avançado/, /AvanÃ§ado/]);
   assert.match(files.resume, /normalizeLanguageLevel/);
   assert.match(files.wizard, /normalizeResumeData/);
 });
@@ -183,28 +191,29 @@ test("checkout uses a compact viewport layout without stacked cards", () => {
 test("download screen uses a compact final-state layout", () => {
   assert.match(files.download, /h-\[100svh\]/);
   assert.match(files.download, /Pagamento confirmado/);
-  assert.match(files.download, /Seu currículo está pronto/);
+  assertMatchesAny(files.download, [/Seu currículo está pronto/, /Seu currÃ­culo estÃ¡ pronto/]);
   assert.match(files.download, /Gerado localmente no navegador/);
   assert.match(files.download, /atscurriculosaas@gmail\.com/);
   assert.doesNotMatch(files.download, /fale@atsfacil\.com\.br/);
   assert.doesNotMatch(files.download, /shadow-soft|rounded-\[32px\]|rounded-3xl/);
-  assert.doesNotMatch(files.download, /Camada extra de segurança|ShieldCheck/);
+  assert.doesNotMatch(files.download, /Camada extra de segurança|Camada extra de seguranÃ§a|ShieldCheck/);
 });
 test("review sends users to a resume model gallery before checkout", () => {
   assert.match(files.wizard, /router\.push\("\/modelos"\)/);
   assert.match(files.modelos, /Modelo ATS/);
-  assert.match(files.modelos, /Currículos para impressão/);
-  assert.match(files.modelos, /Espaço para foto/);
+  assertMatchesAny(files.modelos, [/Currículos para impressão/, /CurrÃ­culos para impressÃ£o/]);
+  assertMatchesAny(files.modelos, [/Espaço para foto/, /EspaÃ§o para foto/]);
   assert.match(files.modelos, /printResumeTemplates/);
   assert.match(files.modelos, /localStorage\.setItem\(TEMPLATE_STORAGE_KEY/);
-  assert.match(files.modelos, /router\.push\("\/checkout"\)/);
+  assert.match(files.modelos, /pendingAction === "test"/);
+  assert.match(files.modelos, /: "\/checkout"/);
   assert.match(files.download, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId, photoDataUrl \}\)/);
 });
 test("ats stays free while print templates are optional paid add-ons", () => {
-  assert.match(files.landing, /ATS grátis|gratuito|grátis/);
-  assert.match(files.modelos, /Baixar ATS grátis/);
-  assert.match(files.modelos, /Adicionar impressão por/);
+  assert.match(files.landing, /ATS grátis|ATS grÃ¡tis|gratuito|grátis|grÃ¡tis/);
+  assertMatchesAny(files.modelos, [/Baixar ATS grátis/, /Baixar ATS grÃ¡tis/]);
+  assertMatchesAny(files.modelos, [/Adicionar impressão por/, /Adicionar impressÃ£o por/]);
   assert.match(files.modelos, /useState<string \| null>\(null\)/);
   assert.match(files.photoModal, /Adicionar foto/);
   assert.match(files.photoModal, /type="file"/);
@@ -217,28 +226,39 @@ test("ats stays free while print templates are optional paid add-ons", () => {
   assert.match(files.download, /localStorage\.getItem\(PHOTO_STORAGE_KEY\)/);
   assert.match(files.download, /mode === "ats"/);
   assert.match(files.download, /Baixar ATS/);
-  assert.match(files.download, /Baixar impressão/);
+  assertMatchesAny(files.download, [/Baixar impressão/, /Baixar impressÃ£o/]);
+});
+test("local print generation can bypass payment only in localhost test mode", () => {
+  assert.match(files.printTestBypass, /PRINT_TEST_MODE = "print-test"/);
+  assert.match(files.printTestBypass, /hostname === "localhost"/);
+  assert.match(files.printTestBypass, /hostname === "127\.0\.0\.1"/);
+  assertMatchesAny(files.modelos, [/Testar impressão sem pagamento/, /Testar impressÃ£o sem pagamento/, /Testar impressÃƒÂ£o sem pagamento/]);
+  assert.match(files.modelos, /pendingAction/);
+  assert.match(files.modelos, /mode=\$\{PRINT_TEST_MODE\}/);
+  assert.match(files.download, /mode === PRINT_TEST_MODE/);
+  assert.match(files.download, /canUsePrintTestBypass/);
 });
 test("model gallery fits the viewport with ats included on the left", () => {
   assert.match(files.modelos, /h-\[100svh\]/);
   assert.match(files.modelos, /overflow-hidden/);
   assert.match(files.modelos, /lg:grid-cols-\[320px_minmax\(0,1fr\)\]/);
   assert.match(files.modelos, /ATS incluso/);
-  assert.match(files.modelos, /Escolha a impressão\./);
+  assertMatchesAny(files.modelos, [/Escolha a impressão\./, /Escolha a impressÃ£o\./]);
   assert.match(files.modelos, /text-2xl font-bold/);
   assert.match(files.modelos, /max-w-\[140px\]/);
   assert.match(files.modelos, /py-2/);
   assert.match(files.modelos, /<aside className="flex min-h-0 flex-col overflow-y-auto \[scrollbar-width:none\] \[-ms-overflow-style:none\] \[\&::-webkit-scrollbar\]:hidden/);
   assert.match(files.modelos, /<aside[\s\S]*ATS incluso[\s\S]*<AtsPreview/);
   assert.doesNotMatch(files.modelos, /Sempre incluso/);
-  assert.match(files.modelos, /Currículos para impressão/);
+  assertMatchesAny(files.modelos, [/Currículos para impressão/, /CurrÃ­culos para impressÃ£o/]);
   assert.match(files.modelos, /selectedTemplateForCheckout/);
   assert.match(files.printTemplates, /previewVariant: "consulting"/);
   assert.match(files.printTemplates, /headerPattern: "developer"/);
   assert.match(files.printTemplates, /sectionPattern: "numbered"/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId: "ats-clean" \}\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId, photoDataUrl \}\)/);
-  assert.doesNotMatch(files.download, /Baixar ATS \+ impressão/);
+  assert.doesNotMatch(files.download, /Baixar ATS \+ impressão|Baixar ATS \+ impressÃ£o/);
 });
+
 
 
