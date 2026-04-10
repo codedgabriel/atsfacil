@@ -180,6 +180,8 @@ test("download screen uses a compact final-state layout", () => {
   assert.match(files.download, /Pagamento confirmado/);
   assert.match(files.download, /Seu currículo está pronto/);
   assert.match(files.download, /Gerado localmente no navegador/);
+  assert.match(files.download, /atscurriculosaas@gmail\.com/);
+  assert.doesNotMatch(files.download, /fale@atsfacil\.com\.br/);
   assert.doesNotMatch(files.download, /shadow-soft|rounded-\[32px\]|rounded-3xl/);
   assert.doesNotMatch(files.download, /Camada extra de segurança|ShieldCheck/);
 });

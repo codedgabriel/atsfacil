@@ -74,7 +74,7 @@ function DownloadInner() {
 
         <div className="mt-6 grid gap-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">
           <p>Gerado localmente no navegador.</p>
-          <p>Problemas? fale@atsfacil.com.br</p>
+          <p>Problemas? atscurriculosaas@gmail.com</p>
         </div>
       </section>
     </main>
