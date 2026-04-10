@@ -356,42 +356,11 @@ export default function WizardPage() {
                     </div>
 
                     <div className={dividerClass}>
-                      <label className="block">
-                        <span className={fieldLabelClass}>LinkedIn (opcional)</span>
-                        <div className="border-b border-slate-300 transition-colors duration-200 focus-within:border-brand">
-                          <div className="flex min-w-0 items-center gap-3">
-                            <span className="whitespace-nowrap text-sm text-slate-500">linkedin.com/in/</span>
-                            <input
-                              type="text"
-                              name="linkedin"
-                              autoComplete="url"
-                              spellCheck={false}
-                              className="min-w-0 flex-1 border-0 bg-transparent px-0 py-3 text-sm text-slate-950 outline-none placeholder:text-slate-400"
-                              placeholder="seu-perfil"
-                              value={linkedInHandle}
-                              onChange={(e) => update("linkedin", buildLinkedInUrl(e.target.value))}
-                            />
-                          </div>
-                        </div>
-                      </label>
-
-                      <div className="mt-6">
-                        <Input
-                          label="Portfólio (opcional)"
-                          type="url"
-                          value={formData.portfolio}
-                          onChange={(e) => update("portfolio", e.target.value)}
-                          placeholder="https://seusite.com/"
-                        />
-                      </div>
-                    </div>
-
-                    <div className={dividerClass}>
-                      <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="flex flex-wrap items-end justify-between gap-4">
                         <div className="max-w-xl">
-                          <h2 className="text-base font-semibold text-slate-950">Outros links úteis</h2>
-                          <p className="mt-1 text-sm leading-7 text-slate-600">
-                            Adicione GitHub, GitLab, Behance, site pessoal ou qualquer link relevante para seu currículo.
+                          <h2 className="text-base font-semibold text-slate-950">Links profissionais</h2>
+                          <p className="mt-1 text-sm leading-6 text-slate-600">
+                            Adicione LinkedIn, portfólio, GitHub, GitLab, Behance ou qualquer link relevante para seu currículo.
                           </p>
                         </div>
                         <Button
@@ -404,10 +373,39 @@ export default function WizardPage() {
                         </Button>
                       </div>
 
+                      <div className="mt-5 grid gap-5">
+                        <label className="block">
+                          <span className={fieldLabelClass}>LinkedIn (opcional)</span>
+                          <div className="border-b border-slate-300 transition-colors duration-200 focus-within:border-brand">
+                            <div className="flex min-w-0 items-center gap-3">
+                              <span className="whitespace-nowrap text-sm text-slate-500">linkedin.com/in/</span>
+                              <input
+                                type="text"
+                                name="linkedin"
+                                autoComplete="url"
+                                spellCheck={false}
+                                className="min-w-0 flex-1 border-0 bg-transparent px-0 py-3 text-sm text-slate-950 outline-none placeholder:text-slate-400"
+                                placeholder="seu-perfil"
+                                value={linkedInHandle}
+                                onChange={(e) => update("linkedin", buildLinkedInUrl(e.target.value))}
+                              />
+                            </div>
+                          </div>
+                        </label>
+
+                      <Input
+                        label="Portfólio (opcional)"
+                        type="url"
+                        value={formData.portfolio}
+                        onChange={(e) => update("portfolio", e.target.value)}
+                        placeholder="https://seusite.com/"
+                      />
+                      </div>
+
                       {formData.links_adicionais.length === 0 ? (
-                        <p className="mt-6 text-sm leading-7 text-slate-500">Nenhum link extra adicionado.</p>
+                        <p className="mt-4 text-sm leading-6 text-slate-500">Nenhum link extra adicionado.</p>
                       ) : (
-                        <div className="mt-6 space-y-6">
+                        <div className="mt-5 space-y-5">
                           {formData.links_adicionais.map((link) => {
                             const prefix = getAdditionalLinkPrefix(link.tipo);
                             const inputValue = getAdditionalLinkInputValue(link.tipo, link.url);

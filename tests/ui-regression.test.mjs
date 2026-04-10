@@ -73,6 +73,12 @@ test("wizard uses three columns with an ATS score panel", () => {
   assert.match(files.wizard, /lg:grid-cols-\[190px_minmax\(0,1fr\)_280px\]/);
 });
 
+test("wizard groups professional links in one compact section", () => {
+  assert.match(files.wizard, /Links profissionais/);
+  assert.match(files.wizard, /Adicione LinkedIn, portf/);
+  assert.doesNotMatch(files.wizard, /Outros links/);
+});
+
 test("landing page uses the editorial minimal direction", () => {
   assert.match(files.landing, /Editor Minimalista/);
   assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);
