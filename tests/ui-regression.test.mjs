@@ -154,3 +154,13 @@ test("wizard persists experience edits before refresh can drop them", () => {
   assert.match(files.wizard, /experiencias: checked \? \[\] : current\.experiencias\.length === 0 \? \[emptyExperience\(\)\] : current\.experiencias/);
   assert.doesNotMatch(files.wizard, /if \(e\.target\.checked\) update\("experiencias", \[\]\)/);
 });
+
+test("checkout uses a compact viewport layout without stacked cards", () => {
+  assert.match(files.checkout, /h-\[100svh\]/);
+  assert.match(files.checkout, /overflow-hidden/);
+  assert.match(files.checkout, /lg:grid-cols-\[220px_minmax\(0,1fr\)\]/);
+  assert.match(files.checkout, /Como pagar:/);
+  assert.match(files.checkout, /h-\[180px\] w-\[180px\]/);
+  assert.doesNotMatch(files.checkout, /shadow-soft|rounded-\[28px\]|rounded-3xl/);
+  assert.doesNotMatch(files.checkout, /aria-label=".*seguran|Boas pr/);
+});
