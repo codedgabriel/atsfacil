@@ -36,6 +36,12 @@ test("wizard copy keeps portuguese accents in user-facing labels", () => {
   assert.match(files.wizard, /Não tenho experiência profissional ainda/);
 });
 
+test("wizard editor uses a minimal shell instead of card wrapper", () => {
+  assert.doesNotMatch(files.wizard, /StepCard/);
+  assert.match(files.wizard, /Etapas/);
+  assert.match(files.wizard, /aria-labelledby="step-heading"/);
+});
+
 test("pdf headings keep portuguese accents", () => {
   assert.match(files.pdf, /EXPERIÊNCIA PROFISSIONAL|EXPERI\\u00caNCIA PROFISSIONAL/);
   assert.match(files.pdf, /FORMAÇÃO ACADÊMICA|FORMA\\u00c7\\u00c3O ACAD\\u00caMICA/);
