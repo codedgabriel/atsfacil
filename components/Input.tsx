@@ -1,16 +1,23 @@
 import clsx from "clsx";
 import type { InputHTMLAttributes } from "react";
+import { HelpTip } from "@/components/HelpTip";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
+  helpTip?: string;
 };
 
-export function Input({ label, error, className, id, name, autoComplete = "off", ...props }: InputProps) {
+export function Input({ label, error, className, id, name, autoComplete = "off", helpTip, ...props }: InputProps) {
   const inputId = id ?? name ?? label.toLowerCase().replace(/\s+/g, "-");
   return (
-    <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">{label}</span>
+    <div className="block">
+      <div className="mb-2 flex items-center gap-2">
+        <label htmlFor={inputId} className="block text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+          {label}
+        </label>
+        {helpTip ? <HelpTip label={label}>{helpTip}</HelpTip> : null}
+      </div>
       <input
         id={inputId}
         name={name ?? inputId}
@@ -24,6 +31,6 @@ export function Input({ label, error, className, id, name, autoComplete = "off",
         {...props}
       />
       {error ? <span aria-live="polite" className="mt-1.5 block text-xs font-medium text-red-600">{error}</span> : null}
-    </label>
+    </div>
   );
 }

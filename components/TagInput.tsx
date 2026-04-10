@@ -2,6 +2,7 @@
 
 import { KeyboardEvent, useState } from "react";
 import clsx from "clsx";
+import { HelpTip } from "@/components/HelpTip";
 
 type TagInputProps = {
   label: string;
@@ -10,9 +11,10 @@ type TagInputProps = {
   placeholder?: string;
   suggestions?: string[];
   maxTags?: number;
+  helpTip?: string;
 };
 
-export function TagInput({ label, tags, onChange, placeholder, suggestions = [], maxTags = 20 }: TagInputProps) {
+export function TagInput({ label, tags, onChange, placeholder, suggestions = [], maxTags = 20, helpTip }: TagInputProps) {
   const [value, setValue] = useState("");
   const inputId = label.toLowerCase().replace(/\s+/g, "-");
 
@@ -36,9 +38,12 @@ export function TagInput({ label, tags, onChange, placeholder, suggestions = [],
 
   return (
     <div>
-      <label htmlFor={inputId} className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
-        {label}
-      </label>
+      <div className="mb-2 flex items-center gap-2">
+        <label htmlFor={inputId} className="block text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+          {label}
+        </label>
+        {helpTip ? <HelpTip label={label}>{helpTip}</HelpTip> : null}
+      </div>
       <div className="border-b border-slate-300 pb-3 transition-colors duration-200 focus-within:border-brand">
         <div className="flex min-w-0 flex-wrap gap-2">
           {tags.map((tag) => (

@@ -470,6 +470,7 @@ export default function WizardPage() {
                       value={formData.cargo_desejado}
                       onChange={(e) => update("cargo_desejado", e.target.value)}
                       error={errors.cargo_desejado}
+                      helpTip="Use o cargo desejado do jeito mais próximo possível da vaga. Ex: Desenvolvedor Front-end, Analista de Dados ou Designer UI."
                     />
                     <Textarea
                       label="Resumo profissional"
@@ -479,6 +480,7 @@ export default function WizardPage() {
                       value={formData.resumo_profissional}
                       onChange={(e) => update("resumo_profissional", e.target.value)}
                       error={errors.resumo_profissional}
+                      helpTip="Use 2 ou 3 frases. Cite seu cargo-alvo, ferramentas importantes e resultados. Evite frases genéricas como sou proativo e comunicativo."
                     />
                   </div>
                 ) : null}
@@ -562,6 +564,7 @@ export default function WizardPage() {
                               placeholder="Descreva responsabilidades e conquistas com verbos de ação"
                               value={item.descricao}
                               onChange={(e) => updateList<Experience>("experiencias", item.id, { descricao: e.target.value })}
+                              helpTip="Comece com verbos de ação e traga impacto. Ex: Otimizei relatórios em Power BI e reduzi o tempo de análise em 30%."
                             />
                           </article>
                         ))}
@@ -640,6 +643,7 @@ export default function WizardPage() {
                       onChange={(tags) => update("habilidades_tecnicas", tags)}
                       placeholder="Ex: React, Python, Excel..."
                       suggestions={technicalSkillSuggestions}
+                      helpTip="Inclua pelo menos 5 habilidades técnicas que aparecem na vaga: ferramentas, linguagens, métodos ou softwares."
                     />
                     <div className={dividerClass}>
                       <TagInput
@@ -648,6 +652,7 @@ export default function WizardPage() {
                         onChange={(tags) => update("habilidades_comportamentais", tags)}
                         placeholder="Ex: Liderança, Comunicação..."
                         suggestions={softSkillSuggestions}
+                        helpTip="Escolha habilidades comportamentais específicas e coerentes com seu perfil. Evite listar muitas sem relação com a vaga."
                       />
                     </div>
                   </div>

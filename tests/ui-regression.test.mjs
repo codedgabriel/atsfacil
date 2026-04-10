@@ -79,6 +79,14 @@ test("wizard groups professional links in one compact section", () => {
   assert.doesNotMatch(files.wizard, /Outros links/);
 });
 
+test("wizard adds ATS help tips to high-impact fields", () => {
+  assert.match(files.wizard, /helpTip=/);
+  assert.match(files.wizard, /Use 2 ou 3 frases/);
+  assert.match(files.wizard, /verbos de a/);
+  assert.match(files.wizard, /5 habilidades t/);
+  assert.match(files.wizard, /cargo desejado/);
+});
+
 test("landing page uses the editorial minimal direction", () => {
   assert.match(files.landing, /Editor Minimalista/);
   assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);
