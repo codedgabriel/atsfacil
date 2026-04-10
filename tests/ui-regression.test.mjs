@@ -28,12 +28,12 @@ test("mercado pago amount is 0.01", () => {
 });
 
 test("wizard copy keeps portuguese accents in user-facing labels", () => {
-  assert.match(files.wizard, /Experiência Profissional|Experi\\u00eancia Profissional/);
-  assert.match(files.wizard, /Formação Acadêmica|Forma\\u00e7\\u00e3o Acad\\u00eamica/);
-  assert.match(files.wizard, /Habilidades Técnicas|Habilidades T\\u00e9cnicas/);
-  assert.match(files.wizard, /Prévia|Pr\\u00e9via/);
-  assert.match(files.wizard, /currículo|curr\\u00edculo/);
-  assert.match(files.wizard, /Não tenho experiência profissional ainda|N\\u00e3o tenho experi\\u00eancia profissional ainda/);
+  assert.match(files.wizard, /Experiência Profissional/);
+  assert.match(files.wizard, /Formação Acadêmica/);
+  assert.match(files.wizard, /Habilidades Técnicas/);
+  assert.match(files.wizard, /Prévia/);
+  assert.match(files.wizard, /currículo/);
+  assert.match(files.wizard, /Não tenho experiência profissional ainda/);
 });
 
 test("pdf headings keep portuguese accents", () => {
@@ -41,6 +41,12 @@ test("pdf headings keep portuguese accents", () => {
   assert.match(files.pdf, /FORMAÇÃO ACADÊMICA|FORMA\\u00c7\\u00c3O ACAD\\u00caMICA/);
   assert.match(files.pdf, /CURSOS E CERTIFICAÇÕES|CURSOS E CERTIFICA\\u00c7\\u00d5ES/);
   assert.match(files.pdf, /Técnicas|T\\u00e9cnicas/);
+});
+
+test("pdf header contact line uses ATS-friendly labels", () => {
+  assert.match(files.pdf, /Email:/);
+  assert.match(files.pdf, /Telefone:/);
+  assert.match(files.pdf, /Localiza/);
 });
 
 test("tag input pills and suggestions can wrap long content", () => {

@@ -71,6 +71,17 @@ function keyValueLine(doc: jsPDF, label: string, value: string, y: number) {
   return y + 6;
 }
 
+function centeredMetaLine(doc: jsPDF, values: string[], y: number) {
+  const text = values.filter(Boolean).join(" | ");
+  if (!text) return y;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor("#333333");
+  doc.text(text, page.width / 2, y, { align: "center", maxWidth: page.width - page.margin * 2 });
+  return y + 5;
+}
+
 export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = {}) {
   const { save = true } = options;
   const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -86,11 +97,15 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
   doc.setFontSize(10);
   doc.setTextColor("#333333");
   const location = [formData.cidade, formData.estado].filter(Boolean).join("-");
-  const contact = [formData.email, formData.telefone, location].filter(Boolean).join(" | ");
-  if (contact) {
-    doc.text(contact, page.width / 2, y, { align: "center" });
-    y += 5;
-  }
+  y = centeredMetaLine(
+    doc,
+    [
+      formData.email ? `Email: ${formData.email}` : "",
+      formData.telefone ? `Telefone: ${formData.telefone}` : "",
+      location ? `Localização: ${location}` : "",
+    ],
+    y,
+  );
 
   const links = getResumeLinks(formData).join(" | ");
   if (links) {
