@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Edit3, Lock, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/Button";
@@ -78,6 +78,8 @@ const stepDefinitions = [
 const totalSteps = stepDefinitions.length;
 const fieldLabelClass = "mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-500";
 const dividerClass = "border-t border-slate-200 pt-6";
+const scrollAreaClass =
+  "[scrollbar-width:thin] [scrollbar-color:#cbd5e1_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400";
 
 function formatMonthYearInput(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 6);
@@ -102,7 +104,9 @@ function focusFirstInvalidField() {
 
 export default function WizardPage() {
   const router = useRouter();
+  const formScrollRef = useRef<HTMLDivElement>(null);
   const [currentStep, setCurrentStep] = useState(0);
+  const [furthestStep, setFurthestStep] = useState(0);
   const [formData, setFormData] = useState<ResumeData>(() => defaultResumeData());
   const [errors, setErrors] = useState<Errors>({});
   const [hydrated, setHydrated] = useState(false);
@@ -227,12 +231,21 @@ export default function WizardPage() {
       focusFirstInvalidField();
       return;
     }
-    setCurrentStep((value) => Math.min(value + 1, totalSteps - 1));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const next = Math.min(currentStep + 1, totalSteps - 1);
+    setCurrentStep(next);
+    setFurthestStep((value) => Math.max(value, next));
+    formScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function previousStep() {
     setCurrentStep((value) => Math.max(value - 1, 0));
+    formScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function goToStep(step: number) {
+    if (step > furthestStep) return;
+    setCurrentStep(step);
+    formScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function goReviewOrNext() {
@@ -242,6 +255,8 @@ export default function WizardPage() {
         return;
       }
       setCurrentStep(totalSteps - 1);
+      setFurthestStep(totalSteps - 1);
+      formScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     nextStep();
@@ -278,17 +293,24 @@ export default function WizardPage() {
         </header>
 
         <div className="mt-5 grid min-h-0 flex-1 gap-6 lg:grid-cols-[190px_minmax(0,1fr)]">
-          <aside className="hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block">
+          <aside className={`hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block ${scrollAreaClass}`}>
             <nav aria-label="Etapas do currículo">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Etapas</p>
               <ol className="mt-3 grid gap-2">
                 {stepDefinitions.map((step, index) => {
                   const isCurrent = index === currentStep;
                   const isCompleted = index < currentStep;
+                  const canNavigate = index <= furthestStep;
 
                   return (
                     <li key={step.title} aria-current={isCurrent ? "step" : undefined} className="border-b border-slate-200 pb-2">
-                      <div className="flex items-start gap-3">
+                      <button
+                        type="button"
+                        className="flex w-full items-start gap-3 text-left transition-opacity duration-200 enabled:hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-100"
+                        onClick={() => goToStep(index)}
+                        disabled={!canNavigate}
+                        aria-label={`Ir para ${step.title}`}
+                      >
                         <span
                           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
                             isCurrent
@@ -306,7 +328,7 @@ export default function WizardPage() {
                             {isCurrent ? "Etapa atual" : isCompleted ? "Preenchido" : "A seguir"}
                           </p>
                         </div>
-                      </div>
+                      </button>
                     </li>
                   );
                 })}
@@ -336,7 +358,7 @@ export default function WizardPage() {
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{stepDefinitions[currentStep].description}</p>
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto pr-1 pt-5 [scrollbar-gutter:stable]">
+              <div ref={formScrollRef} className={`min-h-0 flex-1 overflow-y-auto pr-1 pt-5 [scrollbar-gutter:stable] ${scrollAreaClass}`}>
                 <div className="space-y-8 pb-6">
                 {currentStep === 0 ? (
                   <div className="space-y-8">
@@ -719,7 +741,15 @@ export default function WizardPage() {
                         <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
                         Adicionar curso
                       </Button>
-                      <button type="button" onClick={() => setCurrentStep(7)} className="text-sm font-semibold text-brand transition-colors duration-200 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-100">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentStep(7);
+                          setFurthestStep(totalSteps - 1);
+                          formScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="text-sm font-semibold text-brand transition-colors duration-200 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-100"
+                      >
                         Pular esta etapa →
                       </button>
                     </div>
@@ -760,7 +790,7 @@ export default function WizardPage() {
                           <p className="max-w-2xl break-words text-sm leading-7 text-slate-600">{summary || "Não preenchido"}</p>
                           <button
                             type="button"
-                            onClick={() => setCurrentStep(Number(step))}
+                            onClick={() => goToStep(Number(step))}
                             className="inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors duration-200 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-100"
                             aria-label={`Editar ${title}`}
                           >

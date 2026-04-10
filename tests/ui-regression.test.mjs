@@ -49,6 +49,13 @@ test("wizard editor fits inside the viewport shell", () => {
   assert.match(files.wizard, /shrink-0 border-t/);
 });
 
+test("wizard step rail has quick navigation and styled scrollbars", () => {
+  assert.match(files.wizard, /scrollAreaClass/);
+  assert.match(files.wizard, /goToStep/);
+  assert.match(files.wizard, /aria-label=\{`Ir para/);
+  assert.match(files.wizard, /scrollbar-color/);
+});
+
 test("landing page uses the editorial minimal direction", () => {
   assert.match(files.landing, /Editor Minimalista/);
   assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);
