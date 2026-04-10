@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Edit3, Lock, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { ProgressBar } from "@/components/ProgressBar";
 import { Select } from "@/components/Select";
 import { TagInput } from "@/components/TagInput";
 import { Textarea } from "@/components/Textarea";
@@ -275,26 +274,7 @@ export default function WizardPage() {
 
   return (
     <main id="main-content" className="h-[100svh] overflow-hidden bg-white">
-      <div className="mx-auto flex h-full max-w-6xl flex-col px-4 py-2 sm:px-6 sm:py-3">
-        <header className="shrink-0 border-b border-slate-200 pb-2">
-          <div className="mx-auto w-full max-w-3xl">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <button type="button" className="text-left" onClick={() => router.push("/")}>
-              <span className="text-lg font-bold text-slate-950" translate="no">
-                ATSFácil
-              </span>
-            </button>
-            <span className="text-sm font-medium text-slate-500">
-              Passo {currentStep + 1} de {totalSteps}
-            </span>
-          </div>
-          <div className="mt-2">
-            <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-          </div>
-          </div>
-        </header>
-
-        <div className="mt-4 grid min-h-0 flex-1 gap-6 lg:grid-cols-[190px_minmax(0,1fr)]">
+      <div className="mx-auto grid h-full max-w-6xl gap-6 px-4 py-4 sm:px-6 sm:py-5 lg:grid-cols-[190px_minmax(0,1fr)]">
           <aside className={`hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block ${scrollAreaClass}`}>
             <nav aria-label="Etapas do currículo">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Etapas</p>
@@ -833,7 +813,6 @@ export default function WizardPage() {
             </div>
           </section>
         </div>
-      </div>
     </main>
   );
 }

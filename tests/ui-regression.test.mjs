@@ -49,10 +49,10 @@ test("wizard editor fits inside the viewport shell", () => {
   assert.match(files.wizard, /shrink-0 border-t/);
 });
 
-test("wizard header is compact and centered", () => {
-  assert.match(files.wizard, /sm:py-3/);
-  assert.match(files.wizard, /border-slate-200 pb-2/);
-  assert.match(files.wizard, /mx-auto w-full max-w-3xl/);
+test("wizard removes the duplicated top progress header", () => {
+  assert.doesNotMatch(files.wizard, /ProgressBar/);
+  assert.doesNotMatch(files.wizard, /<header className=/);
+  assert.match(files.wizard, /<main id="main-content" className="h-\[100svh\] overflow-hidden bg-white">/);
 });
 
 test("wizard step rail has quick navigation and styled scrollbars", () => {
