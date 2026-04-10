@@ -9,14 +9,17 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variants = {
-  primary: "border-brand bg-brand text-white hover:bg-blue-700 focus:ring-brand",
-  secondary: "border-gray-300 bg-white text-gray-900 hover:border-brand hover:text-brand focus:ring-brand",
-  ghost: "border-transparent bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-300",
+  primary:
+    "border-transparent bg-brand text-white shadow-soft hover:bg-blue-700 active:bg-blue-800 focus-visible:ring-brand/30",
+  secondary:
+    "border-gray-300 bg-white text-gray-900 hover:border-brand hover:text-brand active:bg-blue-50 focus-visible:ring-brand/20",
+  ghost:
+    "border-transparent bg-transparent text-gray-700 hover:bg-white/80 hover:text-gray-950 active:bg-gray-100 focus-visible:ring-gray-200",
 };
 
 export function Button({ className, variant = "primary", asChild, children, ...props }: ButtonProps) {
   const classes = clsx(
-    "inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+    "inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-50",
     variants[variant],
     className,
   );

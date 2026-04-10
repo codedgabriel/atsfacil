@@ -10,10 +10,10 @@ export function GoogleButton({ className, children = "Entrar com Google" }: { cl
       return;
     }
     const supabase = createBrowserClient();
-    const origin = window.location.origin;
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || window.location.origin).replace(/\/$/, "");
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${origin}/auth/callback` },
+      options: { redirectTo: `${appUrl}/auth/callback` },
     });
   }
 

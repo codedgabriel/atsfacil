@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-import type { ResumeData } from "@/lib/resume";
+import { getResumeLinks, type ResumeData } from "@/lib/resume";
 
 type GeneratePDFOptions = {
   save?: boolean;
@@ -8,7 +8,6 @@ type GeneratePDFOptions = {
 const page = {
   margin: 20,
   width: 210,
-  height: 297,
   bottom: 277,
 };
 
@@ -80,7 +79,7 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.setTextColor("#000000");
-  doc.text(clean(formData.nome_completo) || "Currículo", page.width / 2, y, { align: "center" });
+  doc.text(clean(formData.nome_completo) || "Curriculo", page.width / 2, y, { align: "center" });
   y += 7;
 
   doc.setFont("helvetica", "normal");
@@ -92,10 +91,11 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
     doc.text(contact, page.width / 2, y, { align: "center" });
     y += 5;
   }
-  const links = [formData.linkedin, formData.portfolio].filter(Boolean).join(" · ");
+
+  const links = getResumeLinks(formData).join(" | ");
   if (links) {
     doc.setTextColor("#475569");
-    doc.text(links, page.width / 2, y, { align: "center" });
+    doc.text(links, page.width / 2, y, { align: "center", maxWidth: page.width - page.margin * 2 });
     y += 8;
   } else {
     y += 3;
@@ -106,27 +106,30 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
     y = paragraph(doc, formData.resumo_profissional, y);
   }
 
-  const experiences = formData.sem_experiencia ? [] : [...formData.experiencias].filter((exp) => exp.empresa || exp.cargo || exp.descricao).reverse();
+  const experiences = formData.sem_experiencia
+    ? []
+    : [...formData.experiencias].filter((item) => item.empresa || item.cargo || item.descricao).reverse();
+
   if (experiences.length) {
-    y = sectionHeader(doc, "EXPERIÊNCIA PROFISSIONAL", y);
-    for (const exp of experiences) {
+    y = sectionHeader(doc, "EXPERIENCIA PROFISSIONAL", y);
+    for (const item of experiences) {
       y = ensureSpace(doc, y, 16);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
       doc.setTextColor("#000000");
-      doc.text(clean(`${exp.cargo} — ${exp.empresa}`), page.margin, y);
+      doc.text(clean(`${item.cargo} - ${item.empresa}`), page.margin, y);
       doc.setFont("helvetica", "normal");
       doc.setTextColor("#333333");
-      const dateText = [exp.data_inicio, exp.data_fim].filter(Boolean).join(" – ");
+      const dateText = [item.data_inicio, item.data_fim].filter(Boolean).join(" - ");
       if (dateText) doc.text(dateText, page.width - page.margin, y, { align: "right" });
       y += 6;
-      if (clean(exp.descricao)) y = paragraph(doc, exp.descricao, y);
+      if (clean(item.descricao)) y = paragraph(doc, item.descricao, y);
     }
   }
 
   const education = formData.formacoes.filter((item) => item.curso || item.instituicao);
   if (education.length) {
-    y = sectionHeader(doc, "FORMAÇÃO ACADÊMICA", y);
+    y = sectionHeader(doc, "FORMACAO ACADEMICA", y);
     for (const item of education) {
       y = ensureSpace(doc, y, 12);
       doc.setFont("helvetica", "bold");
@@ -136,14 +139,14 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
       y += 5;
       doc.setFont("helvetica", "normal");
       doc.setTextColor("#333333");
-      doc.text(clean([item.instituicao, item.nivel, item.data_conclusao].filter(Boolean).join(" · ")), page.margin, y);
+      doc.text(clean([item.instituicao, item.nivel, item.data_conclusao].filter(Boolean).join(" | ")), page.margin, y);
       y += 8;
     }
   }
 
   if (formData.habilidades_tecnicas.length || formData.habilidades_comportamentais.length) {
     y = sectionHeader(doc, "HABILIDADES", y);
-    y = keyValueLine(doc, "Técnicas", formData.habilidades_tecnicas.join(", "), y);
+    y = keyValueLine(doc, "Tecnicas", formData.habilidades_tecnicas.join(", "), y);
     y = keyValueLine(doc, "Comportamentais", formData.habilidades_comportamentais.join(", "), y);
     y += 2;
   }
@@ -152,16 +155,16 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
   if (languages.length) {
     y = sectionHeader(doc, "IDIOMAS", y);
     for (const item of languages) {
-      y = paragraph(doc, `${item.idioma} — ${item.nivel}`, y);
+      y = paragraph(doc, `${item.idioma} - ${item.nivel}`, y);
     }
   }
 
   const courses = formData.cursos.filter((item) => item.nome_curso || item.instituicao);
   if (courses.length) {
-    y = sectionHeader(doc, "CURSOS E CERTIFICAÇÕES", y);
+    y = sectionHeader(doc, "CURSOS E CERTIFICACOES", y);
     for (const item of courses) {
-      const suffix = [item.ano ? `(${item.ano})` : "", item.carga_horaria].filter(Boolean).join(" · ");
-      y = paragraph(doc, `${item.nome_curso} — ${item.instituicao}${suffix ? ` ${suffix}` : ""}`, y);
+      const suffix = [item.ano ? `(${item.ano})` : "", item.carga_horaria].filter(Boolean).join(" | ");
+      y = paragraph(doc, `${item.nome_curso} - ${item.instituicao}${suffix ? ` ${suffix}` : ""}`, y);
     }
   }
 

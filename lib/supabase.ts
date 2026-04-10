@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import type { Database } from "@/lib/supabase.types";
 
 export function hasSupabaseEnv() {
@@ -6,12 +6,9 @@ export function hasSupabaseEnv() {
 }
 
 export function createBrowserClient() {
-  return createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
-  );
+  return createClientComponentClient<Database>();
 }
 
 export function createServerClient() {
-  return createBrowserClient();
+  throw new Error("Use createCookieServerClient from lib/supabase-server in server contexts.");
 }

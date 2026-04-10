@@ -29,6 +29,14 @@ export type Course = {
   carga_horaria: string;
 };
 
+export type AdditionalLinkType = "GitHub" | "GitLab" | "Behance" | "Portfolio" | "Site" | "Outro";
+
+export type AdditionalLink = {
+  id: string;
+  tipo: AdditionalLinkType;
+  url: string;
+};
+
 export type ResumeData = {
   nome_completo: string;
   email: string;
@@ -37,6 +45,7 @@ export type ResumeData = {
   estado: string;
   linkedin: string;
   portfolio: string;
+  links_adicionais: AdditionalLink[];
   cargo_desejado: string;
   resumo_profissional: string;
   sem_experiencia: boolean;
@@ -50,17 +59,90 @@ export type ResumeData = {
 
 export const FORM_STORAGE_KEY = "atsfacil_form";
 
-export const educationLevels = ["Técnico", "Graduação", "Pós-graduação", "MBA", "Mestrado", "Doutorado"];
-export const languageLevels = ["Básico", "Intermediário", "Avançado", "Fluente", "Nativo"];
+export const educationLevels = ["Tecnico", "Graduacao", "Pos-graduacao", "MBA", "Mestrado", "Doutorado"];
+export const languageLevels = ["Basico", "Intermediario", "Avancado", "Fluente", "Nativo"];
+export const additionalLinkTypes: AdditionalLinkType[] = ["GitHub", "GitLab", "Behance", "Portfolio", "Site", "Outro"];
+export const technicalSkillSuggestions = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Next.js",
+  "Node.js",
+  "Python",
+  "Java",
+  "C#",
+  "PHP",
+  "SQL",
+  "PostgreSQL",
+  "MySQL",
+  "MongoDB",
+  "Git",
+  "GitHub",
+  "Docker",
+  "AWS",
+  "Azure",
+  "Linux",
+  "REST API",
+  "Figma",
+  "UI Design",
+  "UX Research",
+  "Design System",
+  "Adobe Photoshop",
+  "Adobe Illustrator",
+  "Power BI",
+  "Excel",
+  "Tableau",
+  "R",
+  "SPSS",
+  "Estatistica",
+  "Analise de Dados",
+  "Machine Learning",
+  "Pandas",
+  "NumPy",
+  "Jupyter",
+  "Administração Financeira",
+  "Gestao de Projetos",
+  "Planejamento Estrategico",
+  "CRM",
+  "ERP",
+  "BPM",
+  "SEO",
+  "Google Analytics",
+  "Marketing Digital",
+  "Scrum",
+  "Kanban",
+];
 export const softSkillSuggestions = [
-  "Comunicação",
+  "Comunicacao",
   "Trabalho em equipe",
-  "Liderança",
+  "Lideranca",
   "Proatividade",
-  "Resolução de problemas",
+  "Resolucao de problemas",
   "Adaptabilidade",
   "Criatividade",
-  "Organização",
+  "Organizacao",
+  "Pensamento analitico",
+  "Gestao do tempo",
+  "Atencao aos detalhes",
+  "Empatia",
+  "Negociacao",
+  "Tomada de decisao",
+  "Visao estrategica",
+  "Colaboracao",
+  "Aprendizado rapido",
+  "Autonomia",
+  "Flexibilidade",
+  "Escuta ativa",
+  "Comunicacao visual",
+  "Senso de urgencia",
+  "Gestao de conflitos",
+  "Resiliencia",
+  "Inteligencia emocional",
+  "Capacidade de liderar reunioes",
+  "Pensamento critico",
+  "Orientacao a resultados",
 ];
 
 export const emptyExperience = (): Experience => ({
@@ -76,14 +158,14 @@ export const emptyEducation = (): Education => ({
   id: crypto.randomUUID(),
   curso: "",
   instituicao: "",
-  nivel: "Graduação",
+  nivel: "Graduacao",
   data_conclusao: "",
 });
 
 export const emptyLanguage = (): Language => ({
   id: crypto.randomUUID(),
   idioma: "",
-  nivel: "Intermediário",
+  nivel: "Intermediario",
 });
 
 export const emptyCourse = (): Course => ({
@@ -94,6 +176,12 @@ export const emptyCourse = (): Course => ({
   carga_horaria: "",
 });
 
+export const emptyAdditionalLink = (): AdditionalLink => ({
+  id: crypto.randomUUID(),
+  tipo: "GitHub",
+  url: "",
+});
+
 export const defaultResumeData = (): ResumeData => ({
   nome_completo: "",
   email: "",
@@ -102,6 +190,7 @@ export const defaultResumeData = (): ResumeData => ({
   estado: "",
   linkedin: "",
   portfolio: "",
+  links_adicionais: [],
   cargo_desejado: "",
   resumo_profissional: "",
   sem_experiencia: false,
@@ -116,4 +205,51 @@ export const defaultResumeData = (): ResumeData => ({
 export function isFormEmpty(data: ResumeData | null) {
   if (!data) return true;
   return !data.nome_completo && !data.email && !data.cargo_desejado && !data.resumo_profissional;
+}
+
+export function getLinkedInHandle(value: string) {
+  return value
+    .replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//i, "")
+    .replace(/^linkedin\.com\/in\//i, "")
+    .replace(/^@/, "")
+    .replace(/\/+$/, "")
+    .trim();
+}
+
+export function buildLinkedInUrl(handle: string) {
+  const cleanHandle = getLinkedInHandle(handle);
+  return cleanHandle ? `https://linkedin.com/in/${cleanHandle}` : "";
+}
+
+export function getAdditionalLinkPrefix(type: AdditionalLinkType) {
+  switch (type) {
+    case "GitHub":
+      return "https://github.com/";
+    case "GitLab":
+      return "https://gitlab.com/";
+    case "Behance":
+      return "https://behance.net/";
+    default:
+      return "";
+  }
+}
+
+export function getAdditionalLinkInputValue(type: AdditionalLinkType, value: string) {
+  const prefix = getAdditionalLinkPrefix(type);
+  if (!prefix) return value;
+  const escapedPrefix = prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return value.replace(new RegExp(`^${escapedPrefix}`, "i"), "").replace(/\/+$/, "");
+}
+
+export function buildAdditionalLinkUrl(type: AdditionalLinkType, value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  const prefix = getAdditionalLinkPrefix(type);
+  if (!prefix) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `${prefix}${trimmed.replace(/^@/, "")}`;
+}
+
+export function getResumeLinks(data: ResumeData) {
+  return [data.linkedin, data.portfolio, ...data.links_adicionais.map((link) => link.url)].filter(Boolean);
 }
