@@ -6,7 +6,6 @@ import { ArrowLeft, Check, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/Button";
 import { PhotoUploadModal } from "@/components/PhotoUploadModal";
 import { PrintTemplatePreview } from "@/components/PrintTemplatePreview";
-import { PRINT_TEST_MODE, canUsePrintTestBypass } from "@/lib/printTestBypass";
 import {
   DEFAULT_PRINT_TEMPLATE_ID,
   PHOTO_STORAGE_KEY,
@@ -15,7 +14,6 @@ import {
   isPrintTemplateId,
   printResumeTemplates,
 } from "@/lib/printTemplates";
-import { formatPriceBRL } from "@/lib/pricing";
 import { FORM_STORAGE_KEY, isFormEmpty, normalizeResumeData, type ResumeData } from "@/lib/resume";
 
 const atsResumeTemplate = {
@@ -142,12 +140,10 @@ export default function ModelosPage() {
   const [formData, setFormData] = useState<ResumeData | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [selectedTemplateForCheckout, setSelectedTemplateForCheckout] = useState<string | null>(null);
-  const [pendingAction, setPendingAction] = useState<"checkout" | "test">("checkout");
   const [photoDataUrl, setPhotoDataUrl] = useState("");
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [photoError, setPhotoError] = useState("");
   const [photoBusy, setPhotoBusy] = useState(false);
-  const [canBypassPayment, setCanBypassPayment] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(FORM_STORAGE_KEY);
@@ -177,7 +173,6 @@ export default function ModelosPage() {
 
     const savedPhoto = localStorage.getItem(PHOTO_STORAGE_KEY);
     if (savedPhoto) setPhotoDataUrl(savedPhoto);
-    setCanBypassPayment(canUsePrintTestBypass(window.location.hostname));
   }, [router]);
 
   const currentTemplate = useMemo(
@@ -193,10 +188,9 @@ export default function ModelosPage() {
     router.push("/download?mode=ats");
   }
 
-  function openPhotoModal(action: "checkout" | "test") {
+  function openPhotoModal() {
     if (!selectedTemplate) return;
     setSelectedTemplateForCheckout(selectedTemplate);
-    setPendingAction(action);
     setPhotoError("");
     setPhotoModalOpen(true);
   }
@@ -237,7 +231,7 @@ export default function ModelosPage() {
 
     localStorage.setItem(TEMPLATE_STORAGE_KEY, selectedTemplateForCheckout);
     localStorage.setItem(PHOTO_STORAGE_KEY, photoDataUrl);
-    router.push(pendingAction === "test" ? `/download?mode=${PRINT_TEST_MODE}` : "/checkout");
+    router.push("/download?mode=print");
   }
 
   return (
@@ -257,7 +251,7 @@ export default function ModelosPage() {
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.08em] text-blue-600">Modelos do currículo</p>
             <h1 className="mt-1 text-2xl font-bold text-slate-950 text-balance">Escolha a impressão.</h1>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              O ATS gratuito já está liberado. A impressão só entra se você escolher um modelo com foto.
+              O ATS gratuito já está liberado. Se quiser, você também pode liberar uma versão para impressão com foto sem sair daqui.
             </p>
 
             <div className="mt-3 border-y border-slate-200 py-2">
@@ -274,18 +268,13 @@ export default function ModelosPage() {
               <Button type="button" variant="secondary" className="w-full" onClick={goAtsDownload}>
                 Baixar ATS grátis
               </Button>
-              <Button type="button" className="w-full" onClick={() => openPhotoModal("checkout")} disabled={!selectedTemplate}>
-                Adicionar impressão por {formatPriceBRL()}
+              <Button type="button" className="w-full" onClick={openPhotoModal} disabled={!selectedTemplate}>
+                Liberar impressão grátis
               </Button>
-              {canBypassPayment ? (
-                <Button type="button" variant="ghost" className="w-full" onClick={() => openPhotoModal("test")} disabled={!selectedTemplate}>
-                  Testar impressão sem pagamento
-                </Button>
-              ) : null}
             </div>
 
             <div className="mt-3 border-t border-slate-200 pt-3 text-sm leading-6 text-slate-500">
-              <p>{photoDataUrl ? "Foto pronta e salva neste navegador." : "A foto será pedida antes de seguir para o pagamento."}</p>
+              <p>{photoDataUrl ? "Foto pronta e salva neste navegador." : "A foto será pedida antes de liberar a versão para impressão."}</p>
               <p className="mt-2 flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
                 Seu conteúdo continua salvo no navegador.
@@ -300,7 +289,7 @@ export default function ModelosPage() {
                 <h2 className="mt-2 text-2xl font-bold text-slate-950">Currículos para impressão</h2>
               </div>
               <p className="max-w-lg text-sm leading-6 text-slate-500">
-                Cada modelo tem uma composição própria e recebe a sua foto antes do checkout.
+                Cada modelo tem uma composição própria e recebe a sua foto antes do download final.
               </p>
             </div>
 

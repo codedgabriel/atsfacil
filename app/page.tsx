@@ -1,6 +1,5 @@
-import { ArrowRight, FileText, Lock, ShieldCheck } from "lucide-react";
+import { ArrowRight, FileText, ShieldCheck } from "lucide-react";
 import { GoogleButton } from "@/components/GoogleButton";
-import { formatPriceBRL } from "@/lib/pricing";
 import { hasSupabaseEnv } from "@/lib/supabase";
 
 function EnvBanner() {
@@ -22,11 +21,11 @@ const howItWorks = [
   },
   {
     title: "Revise",
-    description: "Confira o conteúdo em uma tela limpa antes de seguir para o pagamento.",
+    description: "Confira o conteúdo em uma tela limpa antes de liberar os formatos finais.",
   },
   {
     title: "Baixe",
-    description: `Baixe o ATS grátis ou adicione a versão para impressão por ${formatPriceBRL()}.`,
+    description: "Baixe o ATS grátis e libere também a versão para impressão com foto.",
   },
 ];
 
@@ -40,14 +39,12 @@ const principles = [
     description: "O wizard mostra apenas a etapa atual para manter foco no conteúdo, não no layout.",
   },
   {
-    title: "Pagamento Pontual",
-    description: "Você preenche e revisa sem pagar. O Pix entra só se quiser adicionar um currículo para impressão com foto.",
+    title: "Tudo Liberado",
+    description: "Você preenche, revisa e baixa sem barreira de pagamento. O foco agora é testar e ajustar a experiência em produção.",
   },
 ];
 
 export default function Home() {
-  const priceLabel = formatPriceBRL();
-
   return (
     <main id="main-content" className="min-h-screen overflow-x-hidden bg-white text-slate-950">
       <EnvBanner />
@@ -103,7 +100,7 @@ export default function Home() {
                 Criar Meu Currículo Grátis
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </GoogleButton>
-              <p className="text-sm font-medium text-slate-600">O ATS é grátis. A impressão com foto custa {priceLabel}.</p>
+              <p className="text-sm font-medium text-slate-600">ATS e impressão com foto liberados grátis por enquanto.</p>
             </div>
           </div>
         </div>
@@ -162,7 +159,7 @@ export default function Home() {
               Menos caixas na tela. Mais atenção no que o recrutador vai ler.
             </h2>
             <p className="mt-5 text-base leading-8 text-slate-600">
-              O preenchimento guia você por uma superfície limpa, com divisores leves, campos objetivos e revisão final antes do pagamento.
+              O preenchimento guia você por uma superfície limpa, com divisores leves, campos objetivos e revisão final antes de liberar os downloads.
             </p>
           </div>
         </div>
@@ -191,12 +188,9 @@ export default function Home() {
       <section className="border-t border-slate-200 bg-white">
         <div className="mx-auto grid max-w-6xl gap-8 px-5 py-14 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.08em] text-emerald-700">
-              <Lock className="h-4 w-4" aria-hidden="true" />
-              Pagamento único via Pix
-            </div>
+            <div className="text-sm font-semibold uppercase tracking-[0.08em] text-emerald-700">Acesso liberado</div>
             <h2 className="mt-4 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
-              Revise primeiro. Baixe o ATS grátis ou adicione impressão por {priceLabel}.
+              Revise primeiro. Baixe o ATS grátis e a impressão com foto sem custo.
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-600">
               Sem mensalidade, sem plano escondido e sem travar o preenchimento antes da revisão.
@@ -204,9 +198,9 @@ export default function Home() {
           </div>
 
           <div className="min-w-[240px] border-t border-slate-200 pt-6 lg:border-l lg:border-t-0 lg:pl-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Impressão opcional</p>
-            <p className="mt-3 text-5xl font-bold text-slate-950">{priceLabel}</p>
-            <p className="mt-2 text-sm text-slate-500">ATS grátis · Pagamento único · Sem assinatura</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Impressão liberada</p>
+            <p className="mt-3 text-5xl font-bold text-slate-950">Grátis</p>
+            <p className="mt-2 text-sm text-slate-500">ATS grátis · Impressão grátis · Sem assinatura</p>
             <GoogleButton className="mt-6 w-full">Começar Agora</GoogleButton>
           </div>
         </div>

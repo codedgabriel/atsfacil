@@ -9,7 +9,6 @@ import { Select } from "@/components/Select";
 import { TagInput } from "@/components/TagInput";
 import { Textarea } from "@/components/Textarea";
 import { calculateAtsScore, type AtsScoreResult } from "@/lib/atsScore";
-import { formatPriceBRL } from "@/lib/pricing";
 import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
 import { getWizardStepState } from "@/lib/wizardProgress";
 import {
@@ -73,7 +72,7 @@ const stepDefinitions = [
   },
   {
     title: "Revisão",
-    description: "Revise o conteúdo final, volte em qualquer etapa e siga para o pagamento quando estiver tudo certo.",
+    description: "Revise o conteúdo final, volte em qualquer etapa e siga para escolher os formatos quando estiver tudo certo.",
   },
 ] as const;
 
@@ -412,7 +411,7 @@ export default function WizardPage() {
 
             <div className="space-y-2 border-t border-slate-200 pt-4 text-sm leading-6 text-slate-600">
               <p>Seus dados ficam salvos automaticamente no navegador durante todo o preenchimento.</p>
-              <p>O PDF ATS é gratuito. A versão para impressão entra só se você escolher um modelo pago.</p>
+              <p>O PDF ATS é gratuito. A versão para impressão com foto também está liberada para este teste em produção.</p>
             </div>
           </aside>
 
@@ -910,7 +909,7 @@ export default function WizardPage() {
                     </Button>
                     <p className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600">
                       <Lock className="h-4 w-4" aria-hidden="true" />
-                      ATS grátis · Impressão opcional por {formatPriceBRL()}
+                      ATS grátis · Impressão grátis liberada
                     </p>
                   </div>
                 )}

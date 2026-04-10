@@ -6,7 +6,6 @@ import { CheckCircle2, Download } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 import { generatePDF } from "@/lib/generatePDF";
-import { PRINT_TEST_MODE, canUsePrintTestBypass } from "@/lib/printTestBypass";
 import {
   PHOTO_STORAGE_KEY,
   TEMPLATE_STORAGE_KEY,
@@ -23,7 +22,7 @@ function DownloadInner() {
   const [formData, setFormData] = useState<ResumeData | null>(null);
   const [templateId, setTemplateId] = useState<PrintTemplateId>(DEFAULT_PRINT_TEMPLATE_ID);
   const [photoDataUrl, setPhotoDataUrl] = useState("");
-  const [downloadMode, setDownloadMode] = useState<"ats" | "paid">("ats");
+  const [downloadMode, setDownloadMode] = useState<"ats" | "print">("ats");
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ function DownloadInner() {
         return;
       }
 
-      if (mode === PRINT_TEST_MODE && canUsePrintTestBypass(window.location.hostname)) {
+      if (mode === "print") {
         const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
         const savedPhoto = localStorage.getItem(PHOTO_STORAGE_KEY);
         if (!savedTemplate || !savedTemplate.startsWith("print-") || !savedPhoto) {
@@ -52,7 +51,7 @@ function DownloadInner() {
 
         setTemplateId(savedTemplate as PrintTemplateId);
         setPhotoDataUrl(savedPhoto);
-        setDownloadMode("paid");
+        setDownloadMode("print");
         setChecking(false);
         return;
       }
@@ -83,7 +82,7 @@ function DownloadInner() {
 
       setTemplateId(savedTemplate as PrintTemplateId);
       setPhotoDataUrl(savedPhoto);
-      setDownloadMode("paid");
+      setDownloadMode("print");
       setChecking(false);
     }
 
@@ -101,22 +100,22 @@ function DownloadInner() {
     );
   }
 
-  const isPaidMode = downloadMode === "paid";
+  const isPrintMode = downloadMode === "print";
 
   return (
     <main id="main-content" className="flex h-[100svh] items-center justify-center overflow-hidden bg-white px-4 py-6 sm:px-6">
       <section className="w-full max-w-2xl border-y border-slate-200 py-8 text-center sm:py-10">
         <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
           <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-          {isPaidMode ? "Pagamento confirmado" : "ATS liberado"}
+          {isPrintMode ? "Impressão liberada" : "ATS liberado"}
         </div>
 
         <h1 className="mt-5 text-4xl font-bold text-slate-950 text-balance sm:text-5xl">
-          {isPaidMode ? "Seu currículo está pronto." : "Seu currículo ATS está pronto."}
+          {isPrintMode ? "Seu currículo está pronto." : "Seu currículo ATS está pronto."}
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">
-          {isPaidMode
-            ? "O ATS continua incluso e a versão para impressão já pode ser baixada separadamente."
+          {isPrintMode
+            ? "O ATS continua incluso e a versão para impressão com foto já pode ser baixada separadamente."
             : "Baixe agora a versão ATS gratuita. Se quiser uma versão para impressão com foto, escolha um modelo depois."}
         </p>
 
@@ -132,7 +131,7 @@ function DownloadInner() {
             Baixar ATS
           </Button>
 
-          {isPaidMode ? (
+          {isPrintMode ? (
             <Button
               type="button"
               variant="secondary"

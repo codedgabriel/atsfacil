@@ -27,10 +27,10 @@ function assertMatchesAny(content, patterns) {
   );
 }
 
-test("public pricing surfaces use R$ 0,01", () => {
-  assert.match(files.landing, /R\$ ?0,01|formatPriceBRL\(\)/);
-  assert.match(files.wizard, /R\$ ?0,01|formatPriceBRL\(\)/);
-  assert.match(files.checkout, /R\$ ?0,01|formatPriceBRL\(\)/);
+test("public pricing surfaces describe the product as free", () => {
+  assert.match(files.landing, /grátis|grÃ¡tis|gratuito/);
+  assert.match(files.wizard, /grátis|grÃ¡tis|gratuito/);
+  assert.match(files.checkout, /grátis|grÃ¡tis|gratuito/);
 });
 
 test("old pricing copy is gone from public flows", () => {
@@ -39,8 +39,8 @@ test("old pricing copy is gone from public flows", () => {
   assert.doesNotMatch(files.checkout, /1,90|1\.90|4,90|4\.90/);
 });
 
-test("mercado pago amount is 0.01", () => {
-  assert.match(files.paymentRoute, /transaction_amount:\s*(0\.01|PIX_PRICE_AMOUNT)\b/);
+test("mercado pago route still references configurable pricing", () => {
+  assert.match(files.paymentRoute, /transaction_amount:\s*(0\.01|0|PIX_PRICE_AMOUNT)\b/);
 });
 
 test("wizard copy keeps portuguese accents in user-facing labels", () => {
@@ -178,20 +178,17 @@ test("wizard persists experience edits before refresh can drop them", () => {
   assert.doesNotMatch(files.wizard, /if \(e\.target\.checked\) update\("experiencias", \[\]\)/);
 });
 
-test("checkout uses a compact viewport layout without stacked cards", () => {
+test("checkout now works as a lightweight free-release handoff", () => {
   assert.match(files.checkout, /h-\[100svh\]/);
-  assert.match(files.checkout, /overflow-hidden/);
-  assert.match(files.checkout, /lg:grid-cols-\[220px_minmax\(0,1fr\)\]/);
-  assert.match(files.checkout, /Como pagar:/);
-  assert.match(files.checkout, /h-\[180px\] w-\[180px\]/);
-  assert.doesNotMatch(files.checkout, /shadow-soft|rounded-\[28px\]|rounded-3xl/);
-  assert.doesNotMatch(files.checkout, /aria-label=".*seguran|Boas pr/);
+  assert.match(files.checkout, /Liberando impress/);
+  assert.match(files.checkout, /download\?mode=print/);
+  assert.doesNotMatch(files.checkout, /qr_code|Como pagar:|Copiar c[oó]digo Pix|Aguardando pagamento/);
 });
 
 test("download screen uses a compact final-state layout", () => {
   assert.match(files.download, /h-\[100svh\]/);
-  assert.match(files.download, /Pagamento confirmado/);
-  assertMatchesAny(files.download, [/Seu currículo está pronto/, /Seu currÃ­culo estÃ¡ pronto/]);
+  assert.match(files.download, /Impressão liberada|ImpressÃ£o liberada|ATS liberado/);
+  assertMatchesAny(files.download, [/Seu currículo está pronto/, /Seu currÃ­culo estÃ¡ pronto/, /Seu currículo ATS está pronto/, /Seu currÃ­culo ATS estÃ¡ pronto/]);
   assert.match(files.download, /Gerado localmente no navegador/);
   assert.match(files.download, /atscurriculosaas@gmail\.com/);
   assert.doesNotMatch(files.download, /fale@atsfacil\.com\.br/);
@@ -205,38 +202,31 @@ test("review sends users to a resume model gallery before checkout", () => {
   assertMatchesAny(files.modelos, [/Espaço para foto/, /EspaÃ§o para foto/]);
   assert.match(files.modelos, /printResumeTemplates/);
   assert.match(files.modelos, /localStorage\.setItem\(TEMPLATE_STORAGE_KEY/);
-  assert.match(files.modelos, /pendingAction === "test"/);
-  assert.match(files.modelos, /: "\/checkout"/);
+  assert.match(files.modelos, /router\.push\("\/download\?mode=print"\)/);
   assert.match(files.download, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId, photoDataUrl \}\)/);
 });
 test("ats stays free while print templates are optional paid add-ons", () => {
   assert.match(files.landing, /ATS grátis|ATS grÃ¡tis|gratuito|grátis|grÃ¡tis/);
   assertMatchesAny(files.modelos, [/Baixar ATS grátis/, /Baixar ATS grÃ¡tis/]);
-  assertMatchesAny(files.modelos, [/Adicionar impressão por/, /Adicionar impressÃ£o por/]);
+  assertMatchesAny(files.modelos, [/Liberar impressão grátis/, /Liberar impressÃ£o grÃ¡tis/, /Liberar impressÃƒÂ£o grÃƒÂ¡tis/]);
   assert.match(files.modelos, /useState<string \| null>\(null\)/);
   assert.match(files.photoModal, /Adicionar foto/);
   assert.match(files.photoModal, /type="file"/);
   assert.match(files.photoModal, /Salvar foto e continuar/);
   assert.match(files.modelos, /localStorage\.setItem\(PHOTO_STORAGE_KEY/);
-  assert.match(files.checkout, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
-  assert.match(files.checkout, /localStorage\.getItem\(PHOTO_STORAGE_KEY\)/);
-  assert.match(files.checkout, /router\.replace\("\/modelos"\)/);
+  assert.match(files.checkout, /download\?mode=print/);
   assert.match(files.download, /const mode = searchParams.get\("mode"\)/);
   assert.match(files.download, /localStorage\.getItem\(PHOTO_STORAGE_KEY\)/);
   assert.match(files.download, /mode === "ats"/);
+  assert.match(files.download, /mode === "print"/);
   assert.match(files.download, /Baixar ATS/);
   assertMatchesAny(files.download, [/Baixar impressão/, /Baixar impressÃ£o/]);
 });
-test("local print generation can bypass payment only in localhost test mode", () => {
+test("local print bypass helper stays isolated for future debug use", () => {
   assert.match(files.printTestBypass, /PRINT_TEST_MODE = "print-test"/);
   assert.match(files.printTestBypass, /hostname === "localhost"/);
   assert.match(files.printTestBypass, /hostname === "127\.0\.0\.1"/);
-  assertMatchesAny(files.modelos, [/Testar impressão sem pagamento/, /Testar impressÃ£o sem pagamento/, /Testar impressÃƒÂ£o sem pagamento/]);
-  assert.match(files.modelos, /pendingAction/);
-  assert.match(files.modelos, /mode=\$\{PRINT_TEST_MODE\}/);
-  assert.match(files.download, /mode === PRINT_TEST_MODE/);
-  assert.match(files.download, /canUsePrintTestBypass/);
 });
 test("model gallery fits the viewport with ats included on the left", () => {
   assert.match(files.modelos, /h-\[100svh\]/);
