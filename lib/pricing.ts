@@ -1,4 +1,4 @@
-export const PIX_PRICE_AMOUNT = 1.9;
+export const PIX_PRICE_AMOUNT = 0.01;
 
 const brlFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
