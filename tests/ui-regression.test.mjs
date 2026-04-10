@@ -6,6 +6,7 @@ const files = {
   landing: readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8"),
   wizard: readFileSync(new URL("../app/wizard/page.tsx", import.meta.url), "utf8"),
   checkout: readFileSync(new URL("../app/checkout/page.tsx", import.meta.url), "utf8"),
+  download: readFileSync(new URL("../app/download/page.tsx", import.meta.url), "utf8"),
   paymentRoute: readFileSync(new URL("../app/api/create-payment/route.ts", import.meta.url), "utf8"),
   helpTip: readFileSync(new URL("../components/HelpTip.tsx", import.meta.url), "utf8"),
   tagInput: readFileSync(new URL("../components/TagInput.tsx", import.meta.url), "utf8"),
@@ -163,4 +164,13 @@ test("checkout uses a compact viewport layout without stacked cards", () => {
   assert.match(files.checkout, /h-\[180px\] w-\[180px\]/);
   assert.doesNotMatch(files.checkout, /shadow-soft|rounded-\[28px\]|rounded-3xl/);
   assert.doesNotMatch(files.checkout, /aria-label=".*seguran|Boas pr/);
+});
+
+test("download screen uses a compact final-state layout", () => {
+  assert.match(files.download, /h-\[100svh\]/);
+  assert.match(files.download, /Pagamento confirmado/);
+  assert.match(files.download, /Seu currículo está pronto/);
+  assert.match(files.download, /Gerado localmente no navegador/);
+  assert.doesNotMatch(files.download, /shadow-soft|rounded-\[32px\]|rounded-3xl/);
+  assert.doesNotMatch(files.download, /Camada extra de segurança|ShieldCheck/);
 });
