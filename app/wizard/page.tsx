@@ -11,6 +11,7 @@ import { Textarea } from "@/components/Textarea";
 import { calculateAtsScore } from "@/lib/atsScore";
 import { formatPriceBRL } from "@/lib/pricing";
 import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
+import { getWizardStepState } from "@/lib/wizardProgress";
 import {
   additionalLinkTypes,
   buildAdditionalLinkUrl,
@@ -242,7 +243,7 @@ export default function WizardPage() {
   }
 
   function goToStep(step: number) {
-    if (step > furthestStep) return;
+    if (!getWizardStepState(formData, step, currentStep, furthestStep).canNavigate) return;
     setCurrentStep(step);
     formScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -282,8 +283,10 @@ export default function WizardPage() {
               <ol className="mt-3 grid gap-2">
                 {stepDefinitions.map((step, index) => {
                   const isCurrent = index === currentStep;
-                  const isCompleted = index < currentStep;
-                  const canNavigate = index <= furthestStep;
+                  const stepState = getWizardStepState(formData, index, currentStep, furthestStep);
+                  const isCompleted = stepState.progress === "complete";
+                  const isStarted = stepState.progress === "started";
+                  const canNavigate = stepState.canNavigate;
 
                   return (
                     <li key={step.title} aria-current={isCurrent ? "step" : undefined} className="border-b border-slate-200 pb-2">
@@ -300,7 +303,9 @@ export default function WizardPage() {
                               ? "bg-blue-600 text-white"
                               : isCompleted
                                 ? "bg-blue-50 text-blue-600"
-                                : "bg-slate-100 text-slate-500"
+                                : isStarted
+                                  ? "border border-blue-200 bg-white text-blue-600"
+                                  : "bg-slate-100 text-slate-500"
                           }`}
                         >
                           {index + 1}
@@ -308,7 +313,7 @@ export default function WizardPage() {
                         <div className="min-w-0">
                           <p className={`text-sm font-semibold leading-5 ${isCurrent ? "text-slate-950" : "text-slate-600"}`}>{step.title}</p>
                           <p className="mt-0.5 text-xs leading-5 text-slate-500">
-                            {isCurrent ? "Etapa atual" : isCompleted ? "Preenchido" : "A seguir"}
+                            {isCurrent ? "Etapa atual" : isCompleted ? "Preenchido" : isStarted ? "Em preenchimento" : "A seguir"}
                           </p>
                         </div>
                       </button>

@@ -58,6 +58,8 @@ test("wizard removes the duplicated top progress header", () => {
 test("wizard step rail has quick navigation and styled scrollbars", () => {
   assert.match(files.wizard, /scrollAreaClass/);
   assert.match(files.wizard, /goToStep/);
+  assert.match(files.wizard, /getWizardStepState/);
+  assert.match(files.wizard, /Em preenchimento/);
   assert.match(files.wizard, /aria-label=\{`Ir para/);
   assert.match(files.wizard, /scrollbar-width:none/);
   assert.match(files.wizard, /::-webkit-scrollbar\]:hidden/);
