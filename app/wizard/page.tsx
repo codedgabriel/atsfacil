@@ -8,6 +8,7 @@ import { Input } from "@/components/Input";
 import { Select } from "@/components/Select";
 import { TagInput } from "@/components/TagInput";
 import { Textarea } from "@/components/Textarea";
+import { calculateAtsScore } from "@/lib/atsScore";
 import { formatPriceBRL } from "@/lib/pricing";
 import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
 import {
@@ -271,10 +272,11 @@ export default function WizardPage() {
   }
 
   const linkedInHandle = getLinkedInHandle(formData.linkedin);
+  const atsScore = calculateAtsScore(formData);
 
   return (
     <main id="main-content" className="h-[100svh] overflow-hidden bg-white">
-      <div className="mx-auto grid h-full max-w-6xl gap-6 px-4 py-4 sm:px-6 sm:py-5 lg:grid-cols-[190px_minmax(0,1fr)]">
+      <div className="mx-auto grid h-full max-w-7xl gap-6 px-4 py-4 sm:px-6 sm:py-5 lg:grid-cols-[190px_minmax(0,1fr)_240px]">
           <aside className={`hidden min-h-0 space-y-5 overflow-y-auto pr-2 lg:block ${scrollAreaClass}`}>
             <nav aria-label="Etapas do currículo">
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Etapas</p>
@@ -812,6 +814,43 @@ export default function WizardPage() {
               </div>
             </div>
           </section>
+
+          <aside className={`hidden min-h-0 overflow-y-auto border-l border-slate-200 pl-6 lg:block ${scrollAreaClass}`} aria-label="Score ATS">
+            <div className="space-y-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Score ATS</p>
+                <div className="mt-4 flex items-end gap-2">
+                  <span className="text-5xl font-bold tabular-nums text-slate-950">{atsScore.score}</span>
+                  <span className="pb-2 text-sm font-semibold text-slate-500">/100</span>
+                </div>
+                <p className="mt-2 text-sm font-semibold text-blue-600">{atsScore.level}</p>
+              </div>
+
+              <div className="h-2 overflow-hidden rounded-full bg-slate-100" aria-hidden="true">
+                <div className="h-full rounded-full bg-blue-600 transition-[width] duration-300" style={{ width: `${atsScore.score}%` }} />
+              </div>
+
+              <div className="space-y-3 border-t border-slate-200 pt-5">
+                {atsScore.checks.map((check) => (
+                  <div key={check.label} className="border-b border-slate-200 pb-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm font-semibold leading-6 text-slate-800">{check.label}</p>
+                      <span className="text-xs font-semibold tabular-nums text-slate-500">
+                        {check.points}/{check.max}
+                      </span>
+                    </div>
+                    <p className={`mt-1 text-xs leading-5 ${check.complete ? "text-emerald-700" : "text-slate-500"}`}>
+                      {check.complete ? "Completo" : "Pode melhorar"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="border-t border-slate-200 pt-5 text-sm leading-6 text-slate-600">
+                O score é uma estimativa de preenchimento. Quanto mais completo e objetivo o currículo, melhor tende a ser a leitura por ATS.
+              </p>
+            </div>
+          </aside>
         </div>
     </main>
   );

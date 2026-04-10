@@ -62,6 +62,12 @@ test("wizard step rail has quick navigation and styled scrollbars", () => {
   assert.match(files.wizard, /scrollbar-color/);
 });
 
+test("wizard uses three columns with an ATS score panel", () => {
+  assert.match(files.wizard, /calculateAtsScore/);
+  assert.match(files.wizard, /Score ATS/);
+  assert.match(files.wizard, /lg:grid-cols-\[190px_minmax\(0,1fr\)_240px\]/);
+});
+
 test("landing page uses the editorial minimal direction", () => {
   assert.match(files.landing, /Editor Minimalista/);
   assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);
