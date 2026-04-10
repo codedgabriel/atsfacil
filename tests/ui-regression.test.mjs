@@ -10,8 +10,10 @@ const files = {
   checkout: readFileSync(new URL("../app/checkout/page.tsx", import.meta.url), "utf8"),
   download: readFileSync(new URL("../app/download/page.tsx", import.meta.url), "utf8"),
   modelos: existsSync(modelosPageUrl) ? readFileSync(modelosPageUrl, "utf8") : "",
+  photoModal: readFileSync(new URL("../components/PhotoUploadModal.tsx", import.meta.url), "utf8"),
   paymentRoute: readFileSync(new URL("../app/api/create-payment/route.ts", import.meta.url), "utf8"),
   helpTip: readFileSync(new URL("../components/HelpTip.tsx", import.meta.url), "utf8"),
+  printTemplates: readFileSync(new URL("../lib/printTemplates.ts", import.meta.url), "utf8"),
   tagInput: readFileSync(new URL("../components/TagInput.tsx", import.meta.url), "utf8"),
   pdf: readFileSync(new URL("../lib/generatePDF.ts", import.meta.url), "utf8"),
   resume: readFileSync(new URL("../lib/resume.ts", import.meta.url), "utf8"),
@@ -197,16 +199,22 @@ test("review sends users to a resume model gallery before checkout", () => {
   assert.match(files.modelos, /localStorage\.setItem\(TEMPLATE_STORAGE_KEY/);
   assert.match(files.modelos, /router\.push\("\/checkout"\)/);
   assert.match(files.download, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
-  assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
+  assert.match(files.download, /generatePDF\(formData, \{ templateId, photoDataUrl \}\)/);
 });
 test("ats stays free while print templates are optional paid add-ons", () => {
   assert.match(files.landing, /ATS grátis|gratuito|grátis/);
   assert.match(files.modelos, /Baixar ATS grátis/);
   assert.match(files.modelos, /Adicionar impressão por/);
   assert.match(files.modelos, /useState<string \| null>\(null\)/);
+  assert.match(files.photoModal, /Adicionar foto/);
+  assert.match(files.photoModal, /type="file"/);
+  assert.match(files.photoModal, /Salvar foto e continuar/);
+  assert.match(files.modelos, /localStorage\.setItem\(PHOTO_STORAGE_KEY/);
   assert.match(files.checkout, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
+  assert.match(files.checkout, /localStorage\.getItem\(PHOTO_STORAGE_KEY\)/);
   assert.match(files.checkout, /router\.replace\("\/modelos"\)/);
   assert.match(files.download, /const mode = searchParams.get\("mode"\)/);
+  assert.match(files.download, /localStorage\.getItem\(PHOTO_STORAGE_KEY\)/);
   assert.match(files.download, /mode === "ats"/);
   assert.match(files.download, /Baixar ATS/);
   assert.match(files.download, /Baixar impressão/);
@@ -221,11 +229,15 @@ test("model gallery fits the viewport with ats included on the left", () => {
   assert.match(files.modelos, /max-w-\[140px\]/);
   assert.match(files.modelos, /py-2/);
   assert.match(files.modelos, /<aside className="flex min-h-0 flex-col overflow-y-auto \[scrollbar-width:none\] \[-ms-overflow-style:none\] \[\&::-webkit-scrollbar\]:hidden/);
-  assert.match(files.modelos, /<aside[\s\S]*ATS incluso[\s\S]*<TemplateOption template=\{atsResumeTemplate\}/);
+  assert.match(files.modelos, /<aside[\s\S]*ATS incluso[\s\S]*<AtsPreview/);
   assert.doesNotMatch(files.modelos, /Sempre incluso/);
   assert.match(files.modelos, /Currículos para impressão/);
+  assert.match(files.modelos, /selectedTemplateForCheckout/);
+  assert.match(files.printTemplates, /previewVariant: "consulting"/);
+  assert.match(files.printTemplates, /headerPattern: "developer"/);
+  assert.match(files.printTemplates, /sectionPattern: "numbered"/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId: "ats-clean" \}\)/);
-  assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
+  assert.match(files.download, /generatePDF\(formData, \{ templateId, photoDataUrl \}\)/);
   assert.doesNotMatch(files.download, /Baixar ATS \+ impressão/);
 });
 

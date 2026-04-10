@@ -6,10 +6,13 @@ import { CheckCircle2, Download } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
 import { generatePDF } from "@/lib/generatePDF";
+import {
+  PHOTO_STORAGE_KEY,
+  TEMPLATE_STORAGE_KEY,
+  DEFAULT_PRINT_TEMPLATE_ID,
+  type PrintTemplateId,
+} from "@/lib/printTemplates";
 import { FORM_STORAGE_KEY, type ResumeData } from "@/lib/resume";
-
-const TEMPLATE_STORAGE_KEY = "atsfacil_template";
-const DEFAULT_PRINT_TEMPLATE_ID = "print-executivo";
 
 function DownloadInner() {
   const router = useRouter();
@@ -17,7 +20,8 @@ function DownloadInner() {
   const paymentId = searchParams.get("payment_id");
   const mode = searchParams.get("mode");
   const [formData, setFormData] = useState<ResumeData | null>(null);
-  const [templateId, setTemplateId] = useState(DEFAULT_PRINT_TEMPLATE_ID);
+  const [templateId, setTemplateId] = useState<PrintTemplateId>(DEFAULT_PRINT_TEMPLATE_ID);
+  const [photoDataUrl, setPhotoDataUrl] = useState("");
   const [downloadMode, setDownloadMode] = useState<"ats" | "paid">("ats");
   const [checking, setChecking] = useState(true);
 
@@ -47,6 +51,11 @@ function DownloadInner() {
         router.replace("/modelos");
         return;
       }
+      const savedPhoto = localStorage.getItem(PHOTO_STORAGE_KEY);
+      if (!savedPhoto) {
+        router.replace("/modelos");
+        return;
+      }
 
       const response = await fetch(`/api/check-payment?id=${paymentId}`);
       const payload = (await response.json()) as { status: string };
@@ -56,7 +65,8 @@ function DownloadInner() {
         return;
       }
 
-      setTemplateId(savedTemplate);
+      setTemplateId(savedTemplate as PrintTemplateId);
+      setPhotoDataUrl(savedPhoto);
       setDownloadMode("paid");
       setChecking(false);
     }
@@ -113,7 +123,7 @@ function DownloadInner() {
               className="w-full sm:w-auto"
               onClick={() => {
                 if (!formData) return;
-                generatePDF(formData, { templateId });
+                generatePDF(formData, { templateId, photoDataUrl });
               }}
             >
               <Download className="mr-2 h-4 w-4" aria-hidden="true" />

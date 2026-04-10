@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Copy, QrCode, RotateCcw } from "lucide-react";
 import { Button } from "@/components/Button";
 import { Spinner } from "@/components/Spinner";
+import { PHOTO_STORAGE_KEY, TEMPLATE_STORAGE_KEY } from "@/lib/printTemplates";
 import { formatPriceBRL } from "@/lib/pricing";
 import { FORM_STORAGE_KEY, isFormEmpty, type ResumeData } from "@/lib/resume";
 import { createBrowserClient, hasSupabaseEnv } from "@/lib/supabase";
@@ -14,8 +15,6 @@ type PaymentResponse = {
   qr_code_base64: string;
   payment_id: string;
 };
-
-const TEMPLATE_STORAGE_KEY = "atsfacil_template";
 
 function formatTemplateName(templateId: string) {
   return templateId
@@ -90,6 +89,11 @@ export default function CheckoutPage() {
 
     const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
     if (!savedTemplate || !savedTemplate.startsWith("print-")) {
+      router.replace("/modelos");
+      return;
+    }
+    const savedPhoto = localStorage.getItem(PHOTO_STORAGE_KEY);
+    if (!savedPhoto) {
       router.replace("/modelos");
       return;
     }
