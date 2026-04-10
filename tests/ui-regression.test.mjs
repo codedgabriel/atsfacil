@@ -146,3 +146,11 @@ test("education levels keep portuguese accents and formation date copy is clear"
   assert.match(files.wizard, /Conclus\u00e3o prevista ou conclu\u00edda/);
   assert.match(files.wizard, /Status: Em andamento/);
 });
+
+test("wizard persists experience edits before refresh can drop them", () => {
+  assert.match(files.wizard, /function commitFormData/);
+  assert.match(files.wizard, /persistFormData\(next\)/);
+  assert.match(files.wizard, /function setExperienceOptOut/);
+  assert.match(files.wizard, /experiencias: checked \? \[\] : current\.experiencias\.length === 0 \? \[emptyExperience\(\)\] : current\.experiencias/);
+  assert.doesNotMatch(files.wizard, /if \(e\.target\.checked\) update\("experiencias", \[\]\)/);
+});

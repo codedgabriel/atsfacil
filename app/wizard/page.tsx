@@ -208,6 +208,19 @@ export default function WizardPage() {
       });
   }, []);
 
+  function persistFormData(next: ResumeData) {
+    if (!hydrated) return;
+    localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(next));
+  }
+
+  function commitFormData(updater: (current: ResumeData) => ResumeData) {
+    setFormData((current) => {
+      const next = updater(current);
+      persistFormData(next);
+      return next;
+    });
+  }
+
   useEffect(() => {
     if (!hydrated) return;
 
@@ -221,7 +234,7 @@ export default function WizardPage() {
   }, [hydrated]);
 
   function update<K extends keyof ResumeData>(key: K, value: ResumeData[K]) {
-    setFormData((current) => ({ ...current, [key]: value }));
+    commitFormData((current) => ({ ...current, [key]: value }));
     setErrors((current) => {
       const next = { ...current };
       delete next[String(key)];
@@ -234,16 +247,30 @@ export default function WizardPage() {
     id: string,
     patch: Partial<T>,
   ) {
-    setFormData((current) => ({
-      ...current,
-      [key]: (current[key] as T[]).map((item) => (item.id === id ? { ...item, ...patch } : item)),
-    }));
+    commitFormData((current) => {
+      const next = {
+        ...current,
+        [key]: (current[key] as T[]).map((item) => (item.id === id ? { ...item, ...patch } : item)),
+      };
+      return next;
+    });
   }
 
   function removeListItem<T extends Experience | Education | Language | Course | AdditionalLink>(key: keyof ResumeData, id: string) {
-    setFormData((current) => ({
+    commitFormData((current) => {
+      const next = {
+        ...current,
+        [key]: (current[key] as T[]).filter((item) => item.id !== id),
+      };
+      return next;
+    });
+  }
+
+  function setExperienceOptOut(checked: boolean) {
+    commitFormData((current) => ({
       ...current,
-      [key]: (current[key] as T[]).filter((item) => item.id !== id),
+      sem_experiencia: checked,
+      experiencias: checked ? [] : current.experiencias.length === 0 ? [emptyExperience()] : current.experiencias,
     }));
   }
 
@@ -563,11 +590,7 @@ export default function WizardPage() {
                       <input
                         type="checkbox"
                         checked={formData.sem_experiencia}
-                        onChange={(e) => {
-                          update("sem_experiencia", e.target.checked);
-                          if (e.target.checked) update("experiencias", []);
-                          if (!e.target.checked && formData.experiencias.length === 0) update("experiencias", [emptyExperience()]);
-                        }}
+                        onChange={(e) => setExperienceOptOut(e.target.checked)}
                         className="mt-1 h-4 w-4 rounded border-slate-300 text-brand"
                       />
                       <span>Não tenho experiência profissional ainda.</span>
