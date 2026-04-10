@@ -65,12 +65,14 @@ function keyValueParagraph(doc: jsPDF, label: string, value: string, y: number) 
 
   const labelText = `${label}:`;
   const labelX = page.margin;
-  const valueX = page.margin + 26;
-  const valueWidth = page.width - page.margin - valueX;
-  const lines = split(doc, cleanValue, valueWidth);
 
   doc.setFontSize(10);
   doc.setTextColor("#333333");
+  doc.setFont("helvetica", "bold");
+  const valueX = labelX + doc.getTextWidth(labelText) + 2;
+  const valueWidth = page.width - page.margin - valueX;
+  doc.setFont("helvetica", "normal");
+  const lines = split(doc, cleanValue, valueWidth);
 
   lines.forEach((line, index) => {
     y = ensureSpace(doc, y, 7);
