@@ -290,7 +290,7 @@ export default function ModelosPage() {
   return (
     <main id="main-content" className="h-[100svh] overflow-hidden bg-white px-4 py-3 sm:px-6 sm:py-5">
       <div className="mx-auto grid h-full min-h-0 max-w-7xl gap-4 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-6">
-        <aside className="flex min-h-0 flex-col border-b border-slate-200 pb-4 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
+        <aside className="flex min-h-0 flex-col overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden border-b border-slate-200 pb-4 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-6">
           <button
             type="button"
             onClick={() => router.push("/wizard")}

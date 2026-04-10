@@ -208,6 +208,7 @@ test("model gallery fits the viewport and downloads ats plus print PDFs", () => 
   assert.match(files.modelos, /text-2xl font-bold/);
   assert.match(files.modelos, /max-w-\[140px\]/);
   assert.match(files.modelos, /py-2/);
+  assert.match(files.modelos, /<aside className="flex min-h-0 flex-col overflow-y-auto \[scrollbar-width:none\] \[-ms-overflow-style:none\] \[\&::-webkit-scrollbar\]:hidden/);
   assert.match(files.modelos, /<aside[\s\S]*ATS incluso[\s\S]*<TemplateOption template=\{atsResumeTemplate\}/);
   assert.doesNotMatch(files.modelos, /Sempre incluso/);
   assert.match(files.modelos, /Escolha o modelo de impressão/);
