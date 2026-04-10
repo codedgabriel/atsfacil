@@ -75,12 +75,12 @@ export default function WizardPage() {
     () => [
       "Dados Pessoais",
       "Cargo e Resumo",
-      "Experi\u00eancia Profissional",
-      "Forma\u00e7\u00e3o Acad\u00eamica",
+      "Experiência Profissional",
+      "Formação Acadêmica",
       "Habilidades",
       "Idiomas",
-      "Cursos e Certifica\u00e7\u00f5es",
-      "Revis\u00e3o",
+      "Cursos e Certificações",
+      "Revisão",
     ],
     [],
   );
@@ -167,7 +167,7 @@ export default function WizardPage() {
     if (step === 0) {
       if (!formData.nome_completo.trim()) next.nome_completo = "Informe seu nome completo.";
       if (!formData.email.trim()) next.email = "Informe seu email.";
-      else if (!/^\S+@\S+\.\S+$/.test(formData.email)) next.email = "Informe um email v\u00e1lido.";
+      else if (!/^\S+@\S+\.\S+$/.test(formData.email)) next.email = "Informe um email válido.";
       if (formData.estado && formData.estado.length !== 2) next.estado = "Use a sigla com 2 letras.";
     }
 
@@ -186,7 +186,7 @@ export default function WizardPage() {
     if (step === 3) {
       formData.formacoes.forEach((item, index) => {
         if (!item.curso.trim()) next[`formacoes.${index}.curso`] = "Informe o curso.";
-        if (!item.instituicao.trim()) next[`formacoes.${index}.instituicao`] = "Informe a institui\u00e7\u00e3o.";
+        if (!item.instituicao.trim()) next[`formacoes.${index}.instituicao`] = "Informe a instituição.";
       });
     }
 
@@ -326,12 +326,12 @@ export default function WizardPage() {
                 </div>
               </div>
 
-              <Input label="Portf\u00f3lio" type="url" value={formData.portfolio} onChange={(e) => update("portfolio", e.target.value)} />
+              <Input label="Portfólio" type="url" value={formData.portfolio} onChange={(e) => update("portfolio", e.target.value)} />
 
               <div className="space-y-4 rounded-lg border border-gray-200 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="font-semibold text-gray-950">Outros links \u00fateis</h2>
+                    <h2 className="font-semibold text-gray-950">Outros links úteis</h2>
                     <p className="text-sm text-gray-500">Adicione GitHub, GitLab, Behance, site pessoal ou qualquer link relevante.</p>
                   </div>
                   <Button
@@ -409,7 +409,7 @@ export default function WizardPage() {
                 label="Resumo profissional"
                 rows={4}
                 maxLength={500}
-                placeholder="Escreva 2-3 frases sobre voc\u00ea e seus objetivos"
+                placeholder="Escreva 2-3 frases sobre você e seus objetivos"
                 value={formData.resumo_profissional}
                 onChange={(e) => update("resumo_profissional", e.target.value)}
                 error={errors.resumo_profissional}
@@ -420,7 +420,7 @@ export default function WizardPage() {
           {currentStep === 2 ? (
             <div className="space-y-5">
               <div>
-                <h1 className="text-2xl font-bold text-gray-950">Experi\u00eancia Profissional</h1>
+                <h1 className="text-2xl font-bold text-gray-950">Experiência Profissional</h1>
                 <label className="mt-4 flex items-center gap-2 text-sm text-gray-700">
                   <input
                     type="checkbox"
@@ -432,7 +432,7 @@ export default function WizardPage() {
                     }}
                     className="h-4 w-4 rounded border-gray-300 text-brand"
                   />
-                  N\u00e3o tenho experi\u00eancia profissional ainda
+                  Não tenho experiência profissional ainda
                 </label>
               </div>
               {!formData.sem_experiencia ? (
@@ -440,8 +440,8 @@ export default function WizardPage() {
                   {formData.experiencias.map((item, index) => (
                     <div key={item.id} className="space-y-4 rounded-lg border border-gray-200 p-4">
                       <div className="flex items-center justify-between gap-4">
-                        <h2 className="font-semibold text-gray-950">Experi\u00eancia {index + 1}</h2>
-                        <button type="button" className="text-gray-400 hover:text-red-600" onClick={() => removeListItem<Experience>("experiencias", item.id)} aria-label="Remover experi\u00eancia">
+                        <h2 className="font-semibold text-gray-950">Experiência {index + 1}</h2>
+                        <button type="button" className="text-gray-400 hover:text-red-600" onClick={() => removeListItem<Experience>("experiencias", item.id)} aria-label="Remover experiência">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -449,7 +449,7 @@ export default function WizardPage() {
                       <Input label="Cargo" value={item.cargo} onChange={(e) => updateList<Experience>("experiencias", item.id, { cargo: e.target.value })} error={errors[`experiencias.${index}.cargo`]} />
                       <div className="grid grid-cols-2 gap-3">
                         <Input
-                          label="Data in\u00edcio"
+                          label="Data início"
                           placeholder="MM/AAAA"
                           inputMode="numeric"
                           maxLength={7}
@@ -475,11 +475,11 @@ export default function WizardPage() {
                         />
                         Trabalho atual
                       </label>
-                      <Textarea label="Descri\u00e7\u00e3o" rows={3} placeholder="Descreva responsabilidades e conquistas com verbos de a\u00e7\u00e3o" value={item.descricao} onChange={(e) => updateList<Experience>("experiencias", item.id, { descricao: e.target.value })} />
+                      <Textarea label="Descrição" rows={3} placeholder="Descreva responsabilidades e conquistas com verbos de ação" value={item.descricao} onChange={(e) => updateList<Experience>("experiencias", item.id, { descricao: e.target.value })} />
                     </div>
                   ))}
                   <Button type="button" variant="secondary" onClick={() => formData.experiencias.length < 5 && update("experiencias", [...formData.experiencias, emptyExperience()])}>
-                    <Plus className="mr-2 h-4 w-4" /> Adicionar experi\u00eancia
+                    <Plus className="mr-2 h-4 w-4" /> Adicionar experiência
                   </Button>
                 </>
               ) : null}
@@ -488,20 +488,20 @@ export default function WizardPage() {
 
           {currentStep === 3 ? (
             <div className="space-y-5">
-              <h1 className="text-2xl font-bold text-gray-950">Forma\u00e7\u00e3o Acad\u00eamica</h1>
+              <h1 className="text-2xl font-bold text-gray-950">Formação Acadêmica</h1>
               {formData.formacoes.map((item, index) => (
                 <div key={item.id} className="space-y-4 rounded-lg border border-gray-200 p-4">
                   <div className="flex items-center justify-between gap-4">
-                    <h2 className="font-semibold text-gray-950">Forma\u00e7\u00e3o {index + 1}</h2>
-                    <button type="button" className="text-gray-400 hover:text-red-600" onClick={() => removeListItem<Education>("formacoes", item.id)} aria-label="Remover forma\u00e7\u00e3o">
+                    <h2 className="font-semibold text-gray-950">Formação {index + 1}</h2>
+                    <button type="button" className="text-gray-400 hover:text-red-600" onClick={() => removeListItem<Education>("formacoes", item.id)} aria-label="Remover formação">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                   <Input label="Curso" value={item.curso} onChange={(e) => updateList<Education>("formacoes", item.id, { curso: e.target.value })} error={errors[`formacoes.${index}.curso`]} />
-                  <Input label="Institui\u00e7\u00e3o" value={item.instituicao} onChange={(e) => updateList<Education>("formacoes", item.id, { instituicao: e.target.value })} error={errors[`formacoes.${index}.instituicao`]} />
-                  <Select label="N\u00edvel" options={educationLevels} value={item.nivel} onChange={(e) => updateList<Education>("formacoes", item.id, { nivel: e.target.value })} />
+                  <Input label="Instituição" value={item.instituicao} onChange={(e) => updateList<Education>("formacoes", item.id, { instituicao: e.target.value })} error={errors[`formacoes.${index}.instituicao`]} />
+                  <Select label="Nível" options={educationLevels} value={item.nivel} onChange={(e) => updateList<Education>("formacoes", item.id, { nivel: e.target.value })} />
                   <Input
-                    label="Data de conclus\u00e3o"
+                    label="Data de conclusão"
                     placeholder="MM/AAAA"
                     inputMode="numeric"
                     maxLength={7}
@@ -521,7 +521,7 @@ export default function WizardPage() {
                 </div>
               ))}
               <Button type="button" variant="secondary" onClick={() => formData.formacoes.length < 3 && update("formacoes", [...formData.formacoes, emptyEducation()])}>
-                <Plus className="mr-2 h-4 w-4" /> Adicionar forma\u00e7\u00e3o
+                <Plus className="mr-2 h-4 w-4" /> Adicionar formação
               </Button>
             </div>
           ) : null}
@@ -530,7 +530,7 @@ export default function WizardPage() {
             <div className="space-y-7">
               <h1 className="text-2xl font-bold text-gray-950">Habilidades</h1>
               <TagInput
-                label="Habilidades T\u00e9cnicas"
+                label="Habilidades Técnicas"
                 tags={formData.habilidades_tecnicas}
                 onChange={(tags) => update("habilidades_tecnicas", tags)}
                 placeholder="Ex: React, Python, Excel..."
@@ -540,7 +540,7 @@ export default function WizardPage() {
                 label="Habilidades Comportamentais"
                 tags={formData.habilidades_comportamentais}
                 onChange={(tags) => update("habilidades_comportamentais", tags)}
-                placeholder="Ex: Lideran\u00e7a, Comunica\u00e7\u00e3o..."
+                placeholder="Ex: Liderança, Comunicação..."
                 suggestions={softSkillSuggestions}
               />
             </div>
@@ -558,7 +558,7 @@ export default function WizardPage() {
                     </button>
                   </div>
                   <Input label="Idioma" value={item.idioma} onChange={(e) => updateList<Language>("idiomas", item.id, { idioma: e.target.value })} error={errors[`idiomas.${index}.idioma`]} />
-                  <Select label="N\u00edvel" options={languageLevels} value={item.nivel} onChange={(e) => updateList<Language>("idiomas", item.id, { nivel: e.target.value })} />
+                  <Select label="Nível" options={languageLevels} value={item.nivel} onChange={(e) => updateList<Language>("idiomas", item.id, { nivel: e.target.value })} />
                 </div>
               ))}
               <Button type="button" variant="secondary" onClick={() => formData.idiomas.length < 5 && update("idiomas", [...formData.idiomas, emptyLanguage()])}>
@@ -570,7 +570,7 @@ export default function WizardPage() {
           {currentStep === 6 ? (
             <div className="space-y-5">
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold text-gray-950">Cursos e Certifica\u00e7\u00f5es</h1>
+                <h1 className="text-2xl font-bold text-gray-950">Cursos e Certificações</h1>
                 <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-600">opcional</span>
               </div>
               {formData.cursos.map((item, index) => (
@@ -582,7 +582,7 @@ export default function WizardPage() {
                     </button>
                   </div>
                   <Input label="Nome do curso" value={item.nome_curso} onChange={(e) => updateList<Course>("cursos", item.id, { nome_curso: e.target.value })} />
-                  <Input label="Institui\u00e7\u00e3o" value={item.instituicao} onChange={(e) => updateList<Course>("cursos", item.id, { instituicao: e.target.value })} />
+                  <Input label="Instituição" value={item.instituicao} onChange={(e) => updateList<Course>("cursos", item.id, { instituicao: e.target.value })} />
                   <div className="grid grid-cols-2 gap-3">
                     <Input
                       label="Ano"
@@ -591,7 +591,7 @@ export default function WizardPage() {
                       value={formatYearInput(item.ano)}
                       onChange={(e) => updateList<Course>("cursos", item.id, { ano: formatYearInput(e.target.value) })}
                     />
-                    <Input label="Carga hor\u00e1ria" placeholder="Ex: 40h" value={item.carga_horaria} onChange={(e) => updateList<Course>("cursos", item.id, { carga_horaria: e.target.value })} />
+                    <Input label="Carga horária" placeholder="Ex: 40h" value={item.carga_horaria} onChange={(e) => updateList<Course>("cursos", item.id, { carga_horaria: e.target.value })} />
                   </div>
                 </div>
               ))}
@@ -607,7 +607,7 @@ export default function WizardPage() {
           {currentStep === 7 ? (
             <div className="space-y-6">
               <div className="rounded-xl border border-gray-200 p-5">
-                <p className="text-sm font-medium text-gray-500">Pr\u00e9via</p>
+                <p className="text-sm font-medium text-gray-500">Prévia</p>
                 <h1 className="mt-2 text-3xl font-bold text-gray-950">{formData.nome_completo || "Seu nome"}</h1>
                 <p className="mt-1 text-sm text-gray-600">
                   {[formData.email, formData.telefone, `${formData.cidade}${formData.estado ? `-${formData.estado}` : ""}`].filter(Boolean).join(" | ")}
@@ -618,8 +618,8 @@ export default function WizardPage() {
               {[
                 ["Dados pessoais", 0, [formData.nome_completo, formData.email, ...getResumeLinks(formData)].filter(Boolean).join(" · ")],
                 ["Cargo e resumo", 1, `${formData.cargo_desejado} · ${formData.resumo_profissional}`],
-                ["Experi\u00eancia", 2, formData.sem_experiencia ? "Sem experi\u00eancia profissional" : `${formData.experiencias.length} item(ns)`],
-                ["Forma\u00e7\u00e3o", 3, `${formData.formacoes.length} item(ns)`],
+                ["Experiência", 2, formData.sem_experiencia ? "Sem experiência profissional" : `${formData.experiencias.length} item(ns)`],
+                ["Formação", 3, `${formData.formacoes.length} item(ns)`],
                 ["Habilidades", 4, [...formData.habilidades_tecnicas, ...formData.habilidades_comportamentais].join(", ")],
                 ["Idiomas", 5, `${formData.idiomas.length} item(ns)`],
                 ["Cursos", 6, formData.cursos.length ? `${formData.cursos.length} item(ns)` : "Opcional"],
@@ -631,15 +631,15 @@ export default function WizardPage() {
                       <Edit3 className="h-4 w-4" />
                     </button>
                   </summary>
-                  <p className="mt-3 break-words text-sm leading-6 text-gray-600">{summary || "N\u00e3o preenchido"}</p>
+                  <p className="mt-3 break-words text-sm leading-6 text-gray-600">{summary || "Não preenchido"}</p>
                 </details>
               ))}
 
               <Button type="button" className="w-full" onClick={goCheckout}>
-                Gerar meu curr\u00edculo por {formatPriceBRL()}
+                Gerar meu currículo por {formatPriceBRL()}
               </Button>
               <p className="flex items-center justify-center gap-2 text-sm font-medium text-gray-600">
-                <Lock className="h-4 w-4" /> Pagamento \u00fanico via Pix · Sem assinatura
+                <Lock className="h-4 w-4" /> Pagamento único via Pix · Sem assinatura
               </p>
             </div>
           ) : null}
@@ -651,7 +651,7 @@ export default function WizardPage() {
                   Voltar
                 </Button>
                 <Button type="button" onClick={goReviewOrNext}>
-                  {currentStep === 6 ? "Revisar curr\u00edculo" : "Pr\u00f3ximo"}
+                  {currentStep === 6 ? "Revisar currículo" : "Próximo"}
                 </Button>
               </div>
             ) : null}
