@@ -78,8 +78,7 @@ const stepDefinitions = [
 const totalSteps = stepDefinitions.length;
 const fieldLabelClass = "mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-500";
 const dividerClass = "border-t border-slate-200 pt-6";
-const scrollAreaClass =
-  "[scrollbar-width:thin] [scrollbar-color:#cbd5e1_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 hover:[&::-webkit-scrollbar-thumb]:bg-slate-400";
+const scrollAreaClass = "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden";
 
 function formatMonthYearInput(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 6);

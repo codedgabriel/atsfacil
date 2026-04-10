@@ -59,7 +59,9 @@ test("wizard step rail has quick navigation and styled scrollbars", () => {
   assert.match(files.wizard, /scrollAreaClass/);
   assert.match(files.wizard, /goToStep/);
   assert.match(files.wizard, /aria-label=\{`Ir para/);
-  assert.match(files.wizard, /scrollbar-color/);
+  assert.match(files.wizard, /scrollbar-width:none/);
+  assert.match(files.wizard, /::-webkit-scrollbar\]:hidden/);
+  assert.match(files.wizard, /overflow-y-auto/);
 });
 
 test("wizard uses three columns with an ATS score panel", () => {
