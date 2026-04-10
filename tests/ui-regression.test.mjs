@@ -199,3 +199,11 @@ test("review sends users to a resume model gallery before checkout", () => {
   assert.match(files.download, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
   assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
 });
+test("model gallery fits the viewport and downloads ats plus print PDFs", () => {
+  assert.match(files.modelos, /h-\[100svh\]/);
+  assert.match(files.modelos, /overflow-hidden/);
+  assert.match(files.modelos, /ATS incluso/);
+  assert.match(files.modelos, /Escolha o modelo de impressão/);
+  assert.match(files.download, /generatePDF\(formData, \{ templateId: "ats-clean" \}\)/);
+  assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
+});

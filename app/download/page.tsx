@@ -9,13 +9,14 @@ import { generatePDF } from "@/lib/generatePDF";
 import { FORM_STORAGE_KEY, type ResumeData } from "@/lib/resume";
 
 const TEMPLATE_STORAGE_KEY = "atsfacil_template";
+const DEFAULT_PRINT_TEMPLATE_ID = "print-executivo";
 
 function DownloadInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paymentId = searchParams.get("payment_id");
   const [formData, setFormData] = useState<ResumeData | null>(null);
-  const [templateId, setTemplateId] = useState("ats-clean");
+  const [templateId, setTemplateId] = useState(DEFAULT_PRINT_TEMPLATE_ID);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -40,7 +41,8 @@ function DownloadInner() {
       }
 
       setFormData(JSON.parse(saved));
-      setTemplateId(localStorage.getItem(TEMPLATE_STORAGE_KEY) || "ats-clean");
+      const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY) || DEFAULT_PRINT_TEMPLATE_ID;
+      setTemplateId(savedTemplate.startsWith("print-") ? savedTemplate : DEFAULT_PRINT_TEMPLATE_ID);
       setChecking(false);
     }
 
@@ -71,9 +73,16 @@ function DownloadInner() {
           Obrigado pelo pagamento. Clique abaixo para baixar seu PDF final.
         </p>
 
-        <Button className="mt-8 w-full sm:w-auto" onClick={() => formData && generatePDF(formData, { templateId })}>
+        <Button
+          className="mt-8 w-full sm:w-auto"
+          onClick={() => {
+            if (!formData) return;
+            generatePDF(formData, { templateId: "ats-clean" });
+            generatePDF(formData, { templateId });
+          }}
+        >
           <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-          Baixar currículo em PDF
+          Baixar ATS + impressão
         </Button>
 
         <div className="mt-6 grid gap-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">

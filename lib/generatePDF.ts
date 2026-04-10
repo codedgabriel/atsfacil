@@ -177,8 +177,9 @@ function printItem(doc: jsPDF, title: string, details: string, y: number) {
   return y + 1;
 }
 
-function saveDocument(doc: jsPDF, formData: ResumeData, save: boolean) {
-  const fileName = `curriculo-atsfacil-${slugify(formData.nome_completo)}.pdf`;
+function saveDocument(doc: jsPDF, formData: ResumeData, save: boolean, suffix = "ats") {
+  const suffixPart = suffix ? `-${suffix}` : "";
+  const fileName = `curriculo-atsfacil-${slugify(formData.nome_completo)}${suffixPart}.pdf`;
   if (save) doc.save(fileName);
   return doc;
 }
@@ -280,7 +281,7 @@ function generatePrintPDF(formData: ResumeData, templateId: string, save: boolea
     }
   }
 
-  return saveDocument(doc, formData, save);
+  return saveDocument(doc, formData, save, "impressao");
 }
 
 export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = {}) {
@@ -388,5 +389,5 @@ export function generatePDF(formData: ResumeData, options: GeneratePDFOptions = 
     }
   }
 
-  return saveDocument(doc, formData, save);
+  return saveDocument(doc, formData, save, "ats");
 }
