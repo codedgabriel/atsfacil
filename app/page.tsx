@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, FileText, Lock, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, FileText, Lock, ShieldCheck } from "lucide-react";
 import { GoogleButton } from "@/components/GoogleButton";
 import { formatPriceBRL } from "@/lib/pricing";
 import { hasSupabaseEnv } from "@/lib/supabase";
@@ -13,57 +13,57 @@ function EnvBanner() {
   );
 }
 
+const proofPoints = ["+500 candidatos", "Pix em segundos", "Sem assinatura", "PDF gerado no navegador"];
+
 const howItWorks = [
   {
-    title: "Preencha com calma",
-    description: "O wizard organiza seus dados em etapas curtas, com validação e salvamento automático.",
+    title: "Preencha",
+    description: "Dados pessoais, cargo, experiências, formação, habilidades, idiomas e cursos em etapas curtas.",
   },
   {
-    title: `Pague ${formatPriceBRL()}`,
-    description: "Pagamento único via Pix, sem assinatura escondida e sem travas depois do download.",
+    title: "Revise",
+    description: "Confira o conteúdo em uma tela limpa antes de seguir para o pagamento.",
   },
   {
-    title: "Baixe na hora",
-    description: "Assim que o Pix for confirmado, o PDF ATS é gerado no seu navegador.",
+    title: "Baixe",
+    description: `Pague ${formatPriceBRL()} via Pix e receba o PDF ATS pronto para usar.`,
   },
 ];
 
-const featureGroups = [
+const principles = [
   {
-    title: "Feito para triagem automática",
-    description: "Uma estrutura direta, em coluna única, pronta para leitores ATS sem sacrificar clareza para recrutadores.",
+    title: "Formato ATS Aprovado",
+    description: "Currículo em coluna única, com hierarquia simples e sem elementos que atrapalham leitores automáticos.",
   },
   {
-    title: "Fluxo guiado de verdade",
-    description: "Cada passo mostra só o que importa agora, reduz o cansaço e evita campos soltos demais.",
+    title: "Edição Sem Ruído",
+    description: "O wizard mostra apenas a etapa atual para manter foco no conteúdo, não no layout.",
   },
   {
-    title: "Pagamento e geração isolados",
-    description: "Sessões protegidas, respostas sem cache nas rotas de pagamento e PDF gerado localmente depois da aprovação.",
+    title: "Pagamento Pontual",
+    description: "Você preenche e revisa sem pagar. O Pix entra só quando o currículo estiver pronto para download.",
   },
 ];
-
-const trustPoints = ["Já ajudamos +500 candidatos", "Pix em segundos", "Sem assinatura", "Sem instalar nada"];
 
 export default function Home() {
   const priceLabel = formatPriceBRL();
 
   return (
-    <main id="main-content" className="min-h-screen">
+    <main id="main-content" className="min-h-screen overflow-x-hidden bg-white text-slate-950">
       <EnvBanner />
 
-      <header className="border-b border-slate-200/80 bg-white/95">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand text-white shadow-soft">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
               <FileText className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-lg font-bold text-slate-950" translate="no">
                   ATSFácil
                 </span>
-                <span className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-brand">
+                <span className="border border-blue-200 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-blue-600">
                   Novo
                 </span>
               </div>
@@ -71,138 +71,139 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hidden items-center gap-3 text-sm text-slate-500 md:flex">
-            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" aria-hidden="true" />
-              Respostas protegidas
-            </span>
+          <div className="hidden items-center gap-2 text-sm font-medium text-slate-600 md:flex">
+            <ShieldCheck className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+            Respostas protegidas
           </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-5 pb-10 pt-10 sm:px-6 sm:pb-14 sm:pt-14">
-        <div className="max-w-4xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-sm font-medium text-brand">
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-            {trustPoints[0]}
-          </div>
-
-          <h1 className="mt-6 max-w-4xl text-4xl font-bold tracking-tight text-slate-950 text-balance sm:text-6xl">
-            Monte um currículo ATS com cara profissional sem se perder em layout.
-          </h1>
-
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
-            Preencha seus dados passo a passo, pague {priceLabel} e baixe um currículo objetivo, legível e pronto para passar pelos filtros automáticos das empresas.
-          </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <GoogleButton className="w-full sm:w-auto">
-              Criar Meu Currículo Grátis
-              <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-            </GoogleButton>
-            <div className="inline-flex min-h-11 items-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-600">
-              Você só paga no momento do download.
+      <section className="relative min-h-[620px] border-b border-slate-200">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1800&q=80"
+          alt="Mesa de trabalho com documentos, notebook e caneta"
+          width={1800}
+          height={1200}
+          className="absolute inset-0 h-full w-full object-cover"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 bg-white/88" aria-hidden="true" />
+        <div className="relative mx-auto flex min-h-[620px] max-w-6xl items-end px-5 py-12 sm:px-6 sm:py-16">
+          <div className="max-w-4xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-blue-600">Currículo ATS em minutos</p>
+            <h1 className="mt-5 max-w-4xl text-4xl font-bold tracking-tight text-slate-950 text-balance sm:text-6xl">
+              Monte um currículo profissional sem brigar com layout.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-700 sm:text-xl">
+              Preencha seus dados passo a passo, revise com calma e baixe um PDF objetivo para passar pelos filtros automáticos das empresas.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <GoogleButton className="w-full sm:w-auto">
+                Criar Meu Currículo Grátis
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </GoogleButton>
+              <p className="text-sm font-medium text-slate-600">Você só paga {priceLabel} no momento do download.</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="mt-10 grid gap-3 md:grid-cols-4">
-          {trustPoints.map((item) => (
-            <div key={item} className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-medium text-slate-700 shadow-sm">
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-6xl gap-0 px-5 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+          {proofPoints.map((item) => (
+            <div key={item} className="border-b border-slate-200 py-5 text-sm font-semibold text-slate-700 sm:border-r lg:border-b-0">
               {item}
             </div>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
-          <div className="overflow-hidden rounded-3xl border border-slate-200">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80"
-              alt="Pessoa revisando currículo no notebook em um ambiente de trabalho"
-              width={1400}
-              height={900}
-              className="h-full min-h-[320px] w-full object-cover"
-              fetchPriority="high"
-            />
+      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-6">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-blue-600">Como Funciona</p>
+            <h2 className="mt-4 max-w-xl text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
+              O caminho é curto porque cada etapa tem uma função clara.
+            </h2>
           </div>
 
-          <div className="flex flex-col justify-between rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.08em] text-brand">O que muda no fluxo</p>
-              <h2 className="mt-3 text-3xl font-bold text-slate-950 text-balance">Menos bagunça visual, mais foco no conteúdo que faz diferença.</h2>
-              <p className="mt-4 text-base leading-7 text-slate-600">
-                Em vez de formular um currículo em uma tela lotada, você vai preenchendo blocos curtos, revisa tudo no final e só então libera o PDF final.
-              </p>
-            </div>
-
-            <div className="mt-8 space-y-4">
-              {[
-                "Dados organizados por etapa",
-                "Campos dinâmicos para experiências, cursos e idiomas",
-                "PDF simples, direto e compatível com ATS",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3 text-sm text-slate-700">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-600" aria-hidden="true" />
-                  <span>{item}</span>
+          <ol className="border-t border-slate-200">
+            {howItWorks.map((step, index) => (
+              <li key={step.title} className="grid gap-4 border-b border-slate-200 py-6 sm:grid-cols-[80px_minmax(0,1fr)]">
+                <span className="text-sm font-semibold tabular-nums text-blue-600">0{index + 1}</span>
+                <div className="min-w-0">
+                  <h3 className="text-xl font-bold text-slate-950">{step.title}</h3>
+                  <p className="mt-2 max-w-2xl text-base leading-7 text-slate-600">{step.description}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 py-14 sm:px-6">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.08em] text-brand">Como Funciona</p>
-          <h2 className="mt-3 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">Do primeiro dado ao PDF final em 3 movimentos.</h2>
-        </div>
-
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {howItWorks.map((step, index) => (
-            <article key={step.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">{index + 1}</div>
-              <h3 className="mt-5 text-xl font-bold text-slate-950">{step.title}</h3>
-              <p className="mt-3 text-base leading-7 text-slate-600">{step.description}</p>
-            </article>
-          ))}
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
       <section className="border-y border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-6xl px-5 py-14 sm:px-6">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-brand">Por Que Funciona</p>
-            <h2 className="mt-3 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">A experiência foi refeita para ficar limpa, rápida e tranquila de usar.</h2>
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+          <div className="min-w-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80"
+              alt="Pessoa trabalhando em um notebook com anotações ao lado"
+              width={1400}
+              height={900}
+              className="h-auto w-full rounded-lg object-cover"
+              loading="lazy"
+            />
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {featureGroups.map((feature) => (
-              <article key={feature.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-blue-600">Editor Minimalista</p>
+            <h2 className="mt-4 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
+              Menos caixas na tela. Mais atenção no que o recrutador vai ler.
+            </h2>
+            <p className="mt-5 text-base leading-8 text-slate-600">
+              O preenchimento guia você por uma superfície limpa, com divisores leves, campos objetivos e revisão final antes do pagamento.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-6">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.08em] text-blue-600">Por Que Funciona</p>
+            <h2 className="mt-4 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
+              Direto para sistemas ATS e confortável para leitura humana.
+            </h2>
+          </div>
+
+          <div className="border-t border-slate-200">
+            {principles.map((feature) => (
+              <article key={feature.title} className="border-b border-slate-200 py-6">
                 <h3 className="text-xl font-bold text-slate-950">{feature.title}</h3>
-                <p className="mt-3 text-base leading-7 text-slate-600">{feature.description}</p>
+                <p className="mt-2 max-w-2xl text-base leading-7 text-slate-600">{feature.description}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-14 sm:px-6">
-        <div className="grid gap-6 rounded-[28px] border border-slate-200 bg-white p-6 shadow-soft sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+      <section className="border-t border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-6xl gap-8 px-5 py-14 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-end">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700">
+            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.08em] text-emerald-700">
               <Lock className="h-4 w-4" aria-hidden="true" />
               Pagamento único via Pix
             </div>
-            <h2 className="mt-5 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">Tudo pronto para você baixar por {priceLabel}.</h2>
+            <h2 className="mt-4 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">
+              Revise primeiro. Pague {priceLabel} só para baixar.
+            </h2>
             <p className="mt-4 text-base leading-7 text-slate-600">
-              Sem mensalidade, sem conta premium e sem travar o preenchimento. O valor entra só quando o currículo já estiver revisado.
+              Sem mensalidade, sem plano escondido e sem travar o preenchimento antes da revisão.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-slate-50 px-6 py-7 text-left lg:min-w-[260px]">
+          <div className="min-w-[240px] border-t border-slate-200 pt-6 lg:border-l lg:border-t-0 lg:pl-8">
             <p className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-500">Preço Atual</p>
             <p className="mt-3 text-5xl font-bold text-slate-950">{priceLabel}</p>
             <p className="mt-2 text-sm text-slate-500">Pagamento único · Sem assinatura</p>
@@ -212,7 +213,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-slate-200 bg-white px-5 py-8 text-center text-sm text-slate-500 sm:px-6">
-        © 2025 ATSFácil · Feito por D.G
+        © 2025 <span translate="no">ATSFácil</span> · Feito por D.G
       </footer>
     </main>
   );

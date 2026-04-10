@@ -42,6 +42,12 @@ test("wizard editor uses a minimal shell instead of card wrapper", () => {
   assert.match(files.wizard, /aria-labelledby="step-heading"/);
 });
 
+test("landing page uses the editorial minimal direction", () => {
+  assert.match(files.landing, /Editor Minimalista/);
+  assert.match(files.landing, /Monte um currículo profissional sem brigar com layout/);
+  assert.doesNotMatch(files.landing, /rounded-3xl|rounded-\[28px\]|shadow-soft/);
+});
+
 test("pdf headings keep portuguese accents", () => {
   assert.match(files.pdf, /EXPERIÊNCIA PROFISSIONAL|EXPERI\\u00caNCIA PROFISSIONAL/);
   assert.match(files.pdf, /FORMAÇÃO ACADÊMICA|FORMA\\u00c7\\u00c3O ACAD\\u00caMICA/);
