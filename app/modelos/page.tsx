@@ -300,24 +300,22 @@ export default function ModelosPage() {
             Voltar para revisão
           </button>
 
-          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.08em] text-blue-600 sm:mt-8">Modelos do currículo</p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-950 text-balance sm:text-4xl">Escolha a impressão.</h1>
-          <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
-            O Modelo ATS já vai junto. Aqui você escolhe qual versão visual com espaço para foto também será baixada.
-          </p>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.08em] text-blue-600">Modelos do currículo</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-950 text-balance">Escolha a impressão.</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-600">O ATS já vai junto. Escolha a versão com foto.</p>
 
-          <div className="mt-4 border-y border-slate-200 py-3 sm:mt-6 sm:py-4">
+          <div className="mt-3 border-y border-slate-200 py-2">
             <p className="text-sm font-semibold text-slate-950">ATS incluso</p>
-            <div className="mt-3 max-w-[190px]">
+            <div className="mt-2 max-w-[140px]">
               <TemplateOption template={atsResumeTemplate} selected formData={formData} onSelect={() => undefined} />
             </div>
-            <p className="mt-3 text-sm leading-6 text-slate-600">Também será baixado: {currentTemplate.name} com foto.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">+ {currentTemplate.name} com foto.</p>
           </div>
 
-          <Button type="button" className="mt-6 w-full" onClick={goCheckout}>
+          <Button type="button" className="mt-4 w-full" onClick={goCheckout}>
             Continuar para Pix · {formatPriceBRL()}
           </Button>
-          <p className="mt-3 flex items-center gap-2 text-sm leading-6 text-slate-500">
+          <p className="mt-2 flex items-center gap-2 text-sm leading-6 text-slate-500">
             <ShieldCheck className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
             Seu conteúdo continua salvo no navegador.
           </p>
