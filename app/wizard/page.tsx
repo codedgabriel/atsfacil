@@ -355,7 +355,7 @@ export default function WizardPage() {
       return;
     }
     localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(formData));
-    router.push("/checkout");
+    router.push("/modelos");
   }
 
   const linkedInHandle = getLinkedInHandle(formData.linkedin);

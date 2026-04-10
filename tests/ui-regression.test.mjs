@@ -1,12 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+
+const modelosPageUrl = new URL("../app/modelos/page.tsx", import.meta.url);
 
 const files = {
   landing: readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8"),
   wizard: readFileSync(new URL("../app/wizard/page.tsx", import.meta.url), "utf8"),
   checkout: readFileSync(new URL("../app/checkout/page.tsx", import.meta.url), "utf8"),
   download: readFileSync(new URL("../app/download/page.tsx", import.meta.url), "utf8"),
+  modelos: existsSync(modelosPageUrl) ? readFileSync(modelosPageUrl, "utf8") : "",
   paymentRoute: readFileSync(new URL("../app/api/create-payment/route.ts", import.meta.url), "utf8"),
   helpTip: readFileSync(new URL("../components/HelpTip.tsx", import.meta.url), "utf8"),
   tagInput: readFileSync(new URL("../components/TagInput.tsx", import.meta.url), "utf8"),
@@ -184,4 +187,15 @@ test("download screen uses a compact final-state layout", () => {
   assert.doesNotMatch(files.download, /fale@atsfacil\.com\.br/);
   assert.doesNotMatch(files.download, /shadow-soft|rounded-\[32px\]|rounded-3xl/);
   assert.doesNotMatch(files.download, /Camada extra de segurança|ShieldCheck/);
+});
+test("review sends users to a resume model gallery before checkout", () => {
+  assert.match(files.wizard, /router\.push\("\/modelos"\)/);
+  assert.match(files.modelos, /Modelo ATS/);
+  assert.match(files.modelos, /Currículos para impressão/);
+  assert.match(files.modelos, /Espaço para foto/);
+  assert.match(files.modelos, /printResumeTemplates/);
+  assert.match(files.modelos, /localStorage\.setItem\(TEMPLATE_STORAGE_KEY/);
+  assert.match(files.modelos, /router\.push\("\/checkout"\)/);
+  assert.match(files.download, /localStorage\.getItem\(TEMPLATE_STORAGE_KEY\)/);
+  assert.match(files.download, /generatePDF\(formData, \{ templateId \}\)/);
 });

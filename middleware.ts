@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { hasSupabaseEnv } from "@/lib/supabase";
 import { createMiddlewareSupabaseClient } from "@/lib/supabase-server";
 
-const protectedPrefixes = ["/wizard", "/checkout", "/download"];
+const protectedPrefixes = ["/wizard", "/modelos", "/checkout", "/download"];
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();

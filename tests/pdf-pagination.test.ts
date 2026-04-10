@@ -49,3 +49,18 @@ test("soft skill text starts after the full comportamentais label", () => {
 
   assert.ok(valueX >= labelX + doc.getTextWidth("Comportamentais:") + 1);
 });
+
+test("print template PDFs include a photo placeholder", () => {
+  const data = defaultResumeData();
+  data.nome_completo = "Pessoa Teste";
+  data.email = "teste@example.com";
+  data.telefone = "(85) 99999-9999";
+  data.cargo_desejado = "Designer de Produto";
+  data.resumo_profissional = "Profissional com foco em portfólio impresso e apresentação visual.";
+  data.habilidades_tecnicas = ["Figma", "Design System", "Pesquisa"];
+
+  const doc = generatePDF(data, { save: false, templateId: "print-design" });
+  const operations = getPdfTextOperations(doc);
+
+  assert.ok(operations.some((operation) => operation.includes("(Espa")));
+});

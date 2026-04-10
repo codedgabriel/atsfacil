@@ -8,11 +8,14 @@ import { Spinner } from "@/components/Spinner";
 import { generatePDF } from "@/lib/generatePDF";
 import { FORM_STORAGE_KEY, type ResumeData } from "@/lib/resume";
 
+const TEMPLATE_STORAGE_KEY = "atsfacil_template";
+
 function DownloadInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paymentId = searchParams.get("payment_id");
   const [formData, setFormData] = useState<ResumeData | null>(null);
+  const [templateId, setTemplateId] = useState("ats-clean");
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -37,6 +40,7 @@ function DownloadInner() {
       }
 
       setFormData(JSON.parse(saved));
+      setTemplateId(localStorage.getItem(TEMPLATE_STORAGE_KEY) || "ats-clean");
       setChecking(false);
     }
 
@@ -67,7 +71,7 @@ function DownloadInner() {
           Obrigado pelo pagamento. Clique abaixo para baixar seu PDF final.
         </p>
 
-        <Button className="mt-8 w-full sm:w-auto" onClick={() => formData && generatePDF(formData)}>
+        <Button className="mt-8 w-full sm:w-auto" onClick={() => formData && generatePDF(formData, { templateId })}>
           <Download className="mr-2 h-4 w-4" aria-hidden="true" />
           Baixar currículo em PDF
         </Button>
